@@ -12,24 +12,25 @@ int main() {
         // 1. SETUP PERCORSI PARALLELI (ORIGINALI VS ANNOTATE)
         // =========================================================================
         std::string folderOriginali = "C:/Progetti/Template C++/example_images/";
-        std::string folderAnnotate  = "C:/Progetti/Template C++/output/";
-        
+        std::string folderAnnotate = "C:/Progetti/Template C++/output/";
+
         std::string outFolderBianchi = "C:/Progetti/Template C++/output_bianchi/";
         std::string outFolderPiastrine = "C:/Progetti/Template C++/output_piastrine/";
+        std::string outFolderRossi = "C:/Progetti/Template C++/output_rossi/";
 
         fs::create_directories(outFolderBianchi);
         fs::create_directories(outFolderPiastrine);
+        fs::create_directories(outFolderRossi);
 
-        // Usiamo la cartella delle originali per impostare il ciclo di lettura
         std::vector<cv::String> imagePaths;
         cv::glob(folderOriginali + "*.jpeg", imagePaths);
 
         if (imagePaths.empty()) {
-            std::cerr << "ERRORE: Nessuna immagine originale trovata in example_images." << std::endl;
+            std::cerr << "ERRORE: Nessuna immagine trovata in example_images." << std::endl;
             return -1;
-        } 
+        }
 
-        // I tuoi parametri corretti dal calibratore Python (H, S, V)
+        // I NOSTRI PARAMETRI STORICI PER LA MASCHERA UNICA VIOLA
         cv::Scalar lowerViolaGlobale(78, 23, 161);
         cv::Scalar upperViolaGlobale(134, 255, 252);
 
@@ -37,106 +38,129 @@ int main() {
         // 2. CICLO DI ELABORAZIONE
         // =========================================================================
         for (size_t f = 0; f < imagePaths.size(); f++) {
-            // A. Carichiamo l'immagine ORIGINALE su cui faremo TUTTI i calcoli
             cv::Mat imgOriginale = cv::imread(imagePaths[f], cv::IMREAD_COLOR);
             if (imgOriginale.empty()) continue;
 
-            // Estraiamo il nome del file (es. BloodImage_00005.jpeg)
             std::string fullPath = imagePaths[f];
             size_t lastSlash = fullPath.find_last_of("/\\");
             std::string fileName = fullPath.substr(lastSlash + 1);
 
-            // B. Carichiamo l'immagine ANNOTATA corrispondente (solo per la visualizzazione)
-            std::string pathAnnotata = folderAnnotate + fileName;
-            cv::Mat imgAnnotataReale = cv::imread(pathAnnotata, cv::IMREAD_COLOR);
-            
-            if (imgAnnotataReale.empty()) {
-                std::cout << "Avviso: Manca l'immagine annotata per " << fileName << ". Mostrero' solo l'originale." << std::endl;
-                imgAnnotataReale = imgOriginale.clone(); // Fallback se manca il file annotato
-            }
+            cv::Mat imgAnnotataReale = cv::imread(folderAnnotate + fileName, cv::IMREAD_COLOR);
+            if (imgAnnotataReale.empty()) imgAnnotataReale = imgOriginale.clone();
 
-            std::cout << "\n--- Elaborazione in corso: " << fileName << " (" << f + 1 << "/" << imagePaths.size() << ") ---" << std::endl;
+            std::cout << "\n--- Elaborazione con CLAHE: " << fileName << " ---" << std::endl;
 
             // =====================================================================
-            // FASE A: PRE-PROCESSING (PULIZIA RIGIDA SULL'IMMAGINE ORIGINALE)
+            // FASE A: PRE-PROCESSING (BILATERAL FILTER - NIENTE CLAHE)
             // =====================================================================
-            cv::Mat imgMedian, imgBilateral;
+            // 1. Un leggerissimo median blur per togliere la polvere (sale e pepe) senza intaccare i bordi
+            cv::Mat imgMedian;
             cv::medianBlur(imgOriginale, imgMedian, 3);
+
+            // 2. Bilateral Filter: Sfoca il plasma ma mantiene i bordi delle cellule taglienti!
+            cv::Mat imgBilateral;
             cv::bilateralFilter(imgMedian, imgBilateral, 9, 75, 75);
 
-            cv::Mat imgHSV;
+            // 3. Conversioni standard senza manipolazioni del contrasto
+            cv::Mat imgHSV, imgGray;
             cv::cvtColor(imgBilateral, imgHSV, cv::COLOR_BGR2HSV);
+            cv::cvtColor(imgBilateral, imgGray, cv::COLOR_BGR2GRAY);
 
             // =====================================================================
-            // FASE B: MASCHERA COLORE (DALL'ORIGINALE PULITA)
+            // FASE B: LA MASCHERA UNICA VIOLA E LO SMISTAMENTO PER AREA
             // =====================================================================
-            cv::Mat maskGlobale;
-            cv::inRange(imgHSV, lowerViolaGlobale, upperViolaGlobale, maskGlobale);
+            cv::Mat maskViolaGlobale;
+            cv::inRange(imgHSV, lowerViolaGlobale, upperViolaGlobale, maskViolaGlobale);
 
-            // Morfologia matematica per compattare i nuclei e uccidere la polvere
-            cv::morphologyEx(maskGlobale, maskGlobale, cv::MORPH_CLOSE, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(9, 9)));
-            cv::morphologyEx(maskGlobale, maskGlobale, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(3, 3)));
+            cv::morphologyEx(maskViolaGlobale, maskViolaGlobale, cv::MORPH_CLOSE, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
+            cv::morphologyEx(maskViolaGlobale, maskViolaGlobale, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(3, 3)));
 
-            // =====================================================================
-            // FASE C: SMISTAMENTO PER AREA
-            // =====================================================================
             cv::Mat maskSoloBianchi = cv::Mat::zeros(imgOriginale.size(), CV_8UC1);
-            cv::Mat maskSoloPiastrine = cv::Mat::zeros(imgOriginale.size(), CV_8UC1);
+            cv::Mat maskSoloPiastrineRaw = cv::Mat::zeros(imgOriginale.size(), CV_8UC1);
 
             cv::Mat labels, stats, centroids;
-            int nLabels = cv::connectedComponentsWithStats(maskGlobale, labels, stats, centroids);
+            int nLabels = cv::connectedComponentsWithStats(maskViolaGlobale, labels, stats, centroids);
 
             for (int i = 1; i < nLabels; i++) {
                 int area = stats.at<int>(i, cv::CC_STAT_AREA);
 
                 if (area >= 800) {
-                    maskSoloBianchi.setTo(255, labels == i); 
+                    maskSoloBianchi.setTo(255, labels == i);
                 }
-                else if (area >= 10 && area <= 300) {
-                    maskSoloPiastrine.setTo(255, labels == i); 
+                else if (area >= 35 && area <= 250) {
+                    maskSoloPiastrineRaw.setTo(255, labels == i);
                 }
             }
 
-            // Dilatazione estetica delle piastrine per renderle ben visibili a schermo
-            cv::dilate(maskSoloPiastrine, maskSoloPiastrine, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
+            // =====================================================================
+            // FASE C: RIFINITURA BIANCHI E PIASTRINE (Gestione Alone)
+            // =====================================================================
+            // =====================================================================
+ 
+            cv::morphologyEx(maskSoloBianchi, maskSoloBianchi, cv::MORPH_CLOSE, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5,5)));
+
+            cv::Mat zonaEsclusioneCitoplasma;
+            cv::dilate(maskSoloBianchi, zonaEsclusioneCitoplasma, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(35, 35)));
+
+            cv::Mat maskSoloPiastrine;
+            cv::bitwise_and(maskSoloPiastrineRaw, ~zonaEsclusioneCitoplasma, maskSoloPiastrine);
+
+            // MODIFICATO: Portiamo il Size da (5, 5) a (9, 9) per spazzare via i 3 grumi falsi lontani dal bianco
+            cv::morphologyEx(maskSoloPiastrine, maskSoloPiastrine, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(9, 9)));
+
+            cv::Mat maskPiastrineVis;
+            // MODIFICATO: Portiamo da (5, 5) a (7, 7) per rigonfiare bene la piastrina vera superstite
+            cv::dilate(maskSoloPiastrine, maskPiastrineVis, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(7, 7)));
 
             // =====================================================================
-            // FASE D: SALVATAGGIO MASCHERE PULITE
+            // FASE D: GLOBULI ROSSI (OTSU SULL'IMMAGINE CLAHE)
+            // =====================================================================
+            cv::Mat maskTutteLeCellule;
+            cv::threshold(imgGray, maskTutteLeCellule, 0, 255, cv::THRESH_BINARY_INV | cv::THRESH_OTSU);
+
+            std::vector<std::vector<cv::Point>> contours;
+            cv::findContours(maskTutteLeCellule, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+
+            cv::Mat maskCellulePiene = cv::Mat::zeros(maskTutteLeCellule.size(), CV_8UC1);
+            cv::drawContours(maskCellulePiene, contours, -1, cv::Scalar(255), cv::FILLED);
+
+            cv::Mat maskRosa;
+            cv::subtract(maskCellulePiene, maskSoloBianchi, maskRosa);
+            cv::subtract(maskRosa, maskSoloPiastrine, maskRosa);
+
+            cv::morphologyEx(maskRosa, maskRosa, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(15, 15)));
+
+            // =====================================================================
+            // FASE E: SALVATAGGIO
             // =====================================================================
             cv::imwrite(outFolderBianchi + fileName, maskSoloBianchi);
             cv::imwrite(outFolderPiastrine + fileName, maskSoloPiastrine);
+            cv::imwrite(outFolderRossi + fileName, maskRosa);
 
             // =====================================================================
-            // FASE E: FINESTRE DI CONTROLLO (CONFRONTO CORRETTO)
+            // FASE F: LA DASHBOARD A 5 FINESTRE
             // =====================================================================
-            // Finestra 1: L'immagine originale pulita del dataset (su cui hai lavorato)
-            cv::namedWindow("1. Immagine Originale di Lavoro", cv::WINDOW_NORMAL);
-            cv::imshow("1. Immagine Originale di Lavoro", imgOriginale);
+            cv::namedWindow("1. GUIDA REALE", cv::WINDOW_NORMAL);
+            cv::imshow("1. GUIDA REALE", imgAnnotataReale);
 
-            // Finestra 2: L'immagine annotata con i rettangoli (usata come guida visiva per te)
-            cv::namedWindow("2. GUIDA REALE (Con Bounding Box)", cv::WINDOW_NORMAL);
-            cv::imshow("2. GUIDA REALE (Con Bounding Box)", imgAnnotataReale);
+         
 
-            // Finestra 3: La maschera dei Bianchi estratta dall'originale
-            cv::namedWindow("3. TUA MASK - GLOBULI BIANCHI", cv::WINDOW_NORMAL);
-            cv::imshow("3. TUA MASK - GLOBULI BIANCHI", maskSoloBianchi);
+            cv::namedWindow("3. MASK BIANCHI", cv::WINDOW_NORMAL);
+            cv::imshow("3. MASK BIANCHI", maskSoloBianchi);
 
-            // Finestra 4: La maschera delle Piastrine estratta dall'originale
-            cv::namedWindow("4. TUA MASK - PIASTRINE", cv::WINDOW_NORMAL);
-            cv::imshow("4. TUA MASK - PIASTRINE", maskSoloPiastrine);
+            cv::namedWindow("4. MASK PIASTRINE", cv::WINDOW_NORMAL);
+            cv::imshow("4. MASK PIASTRINE", maskPiastrineVis);
 
-            // Premi un tasto qualsiasi sulle finestre per avanzare nel dataset, ESC per uscire
+            cv::namedWindow("5. MASK ROSSI (Otsu)", cv::WINDOW_NORMAL);
+            cv::imshow("5. MASK ROSSI (Otsu)", maskRosa);
+
             int key = cv::waitKey(0);
-            if (key == 27) {
-                std::cout << "\nInterruzione manuale." << std::endl;
-                break;
-            }
+            if (key == 27) break; // ESC esce dal ciclo
         }
-
-        std::cout << "\n[FINE] Controllo incrociato completato!" << std::endl;
+        std::cout << "\n[FINE] Elaborazione completata!" << std::endl;
     }
     catch (const std::exception& e) {
-        std::cerr << "Errore: " << e.what() << std::endl;
+        std::cerr << "Errore a runtime: " << e.what() << std::endl;
     }
     return 0;
 }
