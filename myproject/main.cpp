@@ -48,7 +48,7 @@ int main() {
             cv::Mat imgAnnotataReale = cv::imread(folderAnnotate + fileName, cv::IMREAD_COLOR);
             if (imgAnnotataReale.empty()) imgAnnotataReale = imgOriginale.clone();
 
-            std::cout << "\n--- Elaborazione con CLAHE: " << fileName << " ---" << std::endl;
+            
 
             // =====================================================================
             // FASE A: PRE-PROCESSING (BILATERAL FILTER - NIENTE CLAHE)
@@ -95,10 +95,10 @@ int main() {
             // =====================================================================
             // FASE C: RIFINITURA BIANCHI E PIASTRINE (Gestione Alone)
             // =====================================================================
-            // =====================================================================
- 
+           
             cv::morphologyEx(maskSoloBianchi, maskSoloBianchi, cv::MORPH_CLOSE, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5,5)));
 
+			//dilatiamo i bianchi per creare una zona di esclusione intorno a loro, così da non confondere le piastrine vicine con il citoplasma del bianco
             cv::Mat zonaEsclusioneCitoplasma;
             cv::dilate(maskSoloBianchi, zonaEsclusioneCitoplasma, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(35, 35)));
 
@@ -113,7 +113,7 @@ int main() {
             cv::dilate(maskSoloPiastrine, maskPiastrineVis, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(7, 7)));
 
             // =====================================================================
-            // FASE D: GLOBULI ROSSI (OTSU SULL'IMMAGINE CLAHE)
+            // FASE D: GLOBULI ROSSI (OTSU)
             // =====================================================================
             cv::Mat maskTutteLeCellule;
             cv::threshold(imgGray, maskTutteLeCellule, 0, 255, cv::THRESH_BINARY_INV | cv::THRESH_OTSU);
@@ -125,7 +125,7 @@ int main() {
             cv::drawContours(maskCellulePiene, contours, -1, cv::Scalar(255), cv::FILLED);
 
             cv::Mat maskRosa;
-            cv::subtract(maskCellulePiene, maskSoloBianchi, maskRosa);
+            cv::subtract(maskCellulePiene, zonaEsclusioneCitoplasma, maskRosa);
             cv::subtract(maskRosa, maskSoloPiastrine, maskRosa);
 
             cv::morphologyEx(maskRosa, maskRosa, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(15, 15)));
@@ -142,8 +142,6 @@ int main() {
             // =====================================================================
             cv::namedWindow("1. GUIDA REALE", cv::WINDOW_NORMAL);
             cv::imshow("1. GUIDA REALE", imgAnnotataReale);
-
-         
 
             cv::namedWindow("3. MASK BIANCHI", cv::WINDOW_NORMAL);
             cv::imshow("3. MASK BIANCHI", maskSoloBianchi);
