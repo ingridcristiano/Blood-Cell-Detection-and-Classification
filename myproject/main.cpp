@@ -65,12 +65,12 @@ int main() {
         std::string outFolderPiastrine = "C:\\Users\\giorg\\OneDrive\\Desktop\\progetto_m_l_1\\output_piastrine\\";
         std::string outFolderRossi = "C:\\Users\\giorg\\OneDrive\\Desktop\\progetto_m_l_1\\output_rossi\\";
 
-        /*	std::string folderOriginali = "C:\\Template-C-\\example_images\\";
-        std::string folderAnnotate = "C:\\Template-C-\\output\\";
+        	/*	std::string folderOriginali = "C:\\Template-C-\\example_images\\";
+			std::string folderAnnotate = "C:\\Template-C-\\output\\";
 
-        std::string outFolderBianchi = "C:\\Template-C-\\output_bianchi\\";
-        std::string outFolderPiastrine = "C:\\Template-C-\\output_piastrine\\";
-        std::string outFolderRossi = "C:\\Template-C-\\output_rossi\\";*/
+			std::string outFolderBianchi = "C:\\Template-C-\\output_bianchi\\";
+			std::string outFolderPiastrine = "C:\\Template-C-\\output_piastrine\\";
+			std::string outFolderRossi = "C:\\Template-C-\\output_rossi\\";*/
 
         fs::create_directories(outFolderBianchi);
         fs::create_directories(outFolderPiastrine);
@@ -179,21 +179,64 @@ int main() {
 
 
             // =====================================================================
-            // 3. SEZIONE: GLOBULI ROSSI (Dal Codice 1 - Metodo OTSU)
+            // 3. SEZIONE: GLOBULI ROSSI (Metodo Skeleton -> Solo Centri)
             // =====================================================================
             cv::Mat maskTutteLeCellule;
             cv::threshold(imgGray, maskTutteLeCellule, 0, 255, cv::THRESH_BINARY_INV | cv::THRESH_OTSU);
 
+            // Riempimento dei buchi
             std::vector<std::vector<cv::Point>> contours;
             cv::findContours(maskTutteLeCellule, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+            cv::Mat maskRosa = cv::Mat::zeros(maskTutteLeCellule.size(), CV_8UC1);
+            cv::drawContours(maskRosa, contours, -1, cv::Scalar(255), cv::FILLED);
+            cv::morphologyEx(maskRosa, maskRosa, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(7, 7)));
 
-            cv::Mat maskCellulePiene = cv::Mat::zeros(maskTutteLeCellule.size(), CV_8UC1);
-            cv::drawContours(maskCellulePiene, contours, -1, cv::Scalar(255), cv::FILLED);
+            // 1. Erosione preventiva (fondamentale per lo skeleton per ridurre le ramificazioni)
+            cv::Mat kernelErode = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5));
+            cv::Mat maskEroded;
+            cv::erode(maskRosa, maskEroded, kernelErode, cv::Point(-1, -1), 3); // 3 iterazioni per staccare i grappoli
 
-            // Assegniamo semplicemente la maschera trovata senza fare sottrazioni
-            cv::Mat maskRosa = maskCellulePiene.clone();
+            // 2. Calcolo dello Skeleton
+            cv::Mat skel = cv::Mat::zeros(maskEroded.size(), CV_8UC1);
+            cv::Mat temp, eroded;
+            cv::Mat element = cv::getStructuringElement(cv::MORPH_CROSS, cv::Size(3, 3));
+            cv::Mat imgSkel = maskEroded.clone();
+            bool done = false;
 
-            cv::morphologyEx(maskRosa, maskRosa, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(15, 15)));
+            while (!done) {
+                cv::erode(imgSkel, eroded, element);
+                cv::dilate(eroded, temp, element);
+                cv::subtract(imgSkel, temp, temp);
+                cv::bitwise_or(skel, temp, skel);
+                imgSkel = eroded.clone();
+                if (cv::countNonZero(imgSkel) == 0) done = true;
+            }
+
+            // 3. Estrazione e Campionamento dei punti
+            std::vector<cv::Point> skelPoints;
+            cv::findNonZero(skel, skelPoints);
+
+            // Creiamo una maschera nera dove inseriremo SOLO i puntini
+            cv::Mat maskSoloCentri = cv::Mat::zeros(maskRosa.size(), CV_8UC1);
+
+            // --- PARAMETRO CHIAVE ---
+            // Lo 'step' decide ogni quanti pixel dello skeleton prendiamo un punto.
+            // Se vedi una "fila" di troppi punti sulla stessa cellula, AUMENTA questo valore (es. a 30 o 40).
+            int step = 60;
+
+            // Creiamo anche una lista per salvare le coordinate (ti servirà per il Machine Learning)
+            std::vector<cv::Point> listaCentri;
+
+            for (size_t i = 0; i < skelPoints.size(); i += step) {
+                listaCentri.push_back(skelPoints[i]);
+
+                // Disegniamo un puntino corposo (raggio 4) per vederlo bene nella Dashboard
+                cv::circle(maskSoloCentri, skelPoints[i], 8, cv::Scalar(255), cv::FILLED);
+            }
+
+            // Riassegna la maschera per visualizzarla su "5. MASK ROSSI"
+            maskRosa = maskSoloCentri.clone();
+
 
 
             // =====================================================================
