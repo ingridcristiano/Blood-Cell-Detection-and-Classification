@@ -1,3 +1,7 @@
+# Imposta lo standard C++17 per abilitare <filesystem>
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # include libraries
 include_directories (${ipa_SOURCE_DIR}/3rdparty/ipalib)
 include_directories (${ipa_SOURCE_DIR}/3rdparty/ucaslib)

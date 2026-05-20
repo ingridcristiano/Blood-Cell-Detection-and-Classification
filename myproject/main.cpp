@@ -3,20 +3,67 @@
 #include <vector>
 #include <string>
 #include <filesystem>
+#include <fstream>
+#include <cmath>
 
 namespace fs = std::filesystem;
+
+void extractAndSaveFeatures(const cv::Mat& imgOriginale, const cv::Mat& mask,
+    const std::string& cellType, const std::string& imageName,
+    std::ofstream& csvFile) {
+
+    std::vector<std::vector<cv::Point>> contours;
+    // Troviamo i contorni esterni nella maschera
+    cv::findContours(mask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+
+    for (const auto& contour : contours) {
+        double area = cv::contourArea(contour);
+
+        // Filtriamo rumore microscopico (puoi aggiustare questo valore)
+        if (area < 5.0) continue;
+
+        double perimetro = cv::arcLength(contour, true);
+
+        // Bounding box per calcolare l'Aspect Ratio
+        cv::Rect boundingBox = cv::boundingRect(contour);
+        double aspectRatio = (double)boundingBox.width / (double)boundingBox.height;
+
+        // Circolarità: 4 * pi * Area / (Perimetro^2). Più si avvicina a 1, più è un cerchio perfetto.
+        double circolarita = 0.0;
+        if (perimetro > 0) {
+            circolarita = (4.0 * CV_PI * area) / (perimetro * perimetro);
+        }
+
+        // Estrazione del colore medio: creiamo una maschera solo per questa singola cellula
+        cv::Mat singleCellMask = cv::Mat::zeros(mask.size(), CV_8UC1);
+        cv::drawContours(singleCellMask, std::vector<std::vector<cv::Point>>{contour}, -1, cv::Scalar(255), cv::FILLED);
+        cv::Scalar meanColor = cv::mean(imgOriginale, singleCellMask);
+
+        // Salviamo i dati nel CSV
+        csvFile << imageName << ","
+            << cellType << ","
+            << area << ","
+            << perimetro << ","
+            << circolarita << ","
+            << aspectRatio << ","
+            << meanColor[0] << "," // Blu medio
+            << meanColor[1] << "," // Verde medio
+            << meanColor[2] << "\n"; // Rosso medio
+    }
+}
 
 int main() {
     try {
         // =========================================================================
         // 0. SETUP PERCORSI
         // =========================================================================
-        std::string folderOriginali = "C:/Progetti/Template C++/example_images/";
-        std::string folderAnnotate = "C:/Progetti/Template C++/output/";
 
-        std::string outFolderBianchi = "C:/Progetti/Template C++/output_bianchi/";
-        std::string outFolderPiastrine = "C:/Progetti/Template C++/output_piastrine/";
-        std::string outFolderRossi = "C:/Progetti/Template C++/output_rossi/";
+        std::string folderOriginali = "C:\\Users\\giorg\\OneDrive\\Desktop\\progetto_m_l_1\\example_images\\";
+        std::string folderAnnotate = "C:\\Users\\giorg\\OneDrive\\Desktop\\progetto_m_l_1\\output\\";
+
+        std::string outFolderBianchi = "C:\\Users\\giorg\\OneDrive\\Desktop\\progetto_m_l_1\\output_bianchi\\";
+        std::string outFolderPiastrine = "C:\\Users\\giorg\\OneDrive\\Desktop\\progetto_m_l_1\\output_piastrine\\";
+        std::string outFolderRossi = "C:\\Users\\giorg\\OneDrive\\Desktop\\progetto_m_l_1\\output_rossi\\";
 
         /*	std::string folderOriginali = "C:\\Template-C-\\example_images\\";
         std::string folderAnnotate = "C:\\Template-C-\\output\\";
@@ -41,6 +88,20 @@ int main() {
         // Parametri per i globuli bianchi (dal primo codice)
         cv::Scalar lowerViolaGlobale(78, 23, 161);
         cv::Scalar upperViolaGlobale(134, 255, 252);
+
+        // ... (il tuo codice di setup delle cartelle) ...
+
+        // SETUP FILE CSV PER LE FEATURE
+        std::string csvPath = "C:\\Users\\giorg\\OneDrive\\Desktop\\progetto_m_l_1\\features_cellule.csv";
+        std::ofstream csvFile(csvPath);
+        if (!csvFile.is_open()) {
+            std::cerr << "ERRORE: Impossibile creare il file CSV." << std::endl;
+            return -1;
+        }
+        // Scriviamo l'header del CSV
+        csvFile << "ImageName,CellType,Area,Perimeter,Circularity,AspectRatio,MeanBlue,MeanGreen,MeanRed\n";
+
+
 
         // =========================================================================
         // CICLO DI ELABORAZIONE IMMAGINI
@@ -142,6 +203,19 @@ int main() {
             cv::imwrite(outFolderPiastrine + fileName, maskSoloPiastrine);
             cv::imwrite(outFolderRossi + fileName, maskRosa);
 
+            // ... (il tuo codice di salvataggio delle maschere) ...
+            cv::imwrite(outFolderBianchi + fileName, maskSoloBianchi);
+            cv::imwrite(outFolderPiastrine + fileName, maskSoloPiastrine);
+            cv::imwrite(outFolderRossi + fileName, maskRosa);
+
+            // =====================================================================
+            // ESTRAZIONE FEATURE
+            // =====================================================================
+            extractAndSaveFeatures(imgOriginale, maskSoloBianchi, "GlobuloBianco", fileName, csvFile);
+            extractAndSaveFeatures(imgOriginale, maskSoloPiastrine, "Piastrina", fileName, csvFile);
+            extractAndSaveFeatures(imgOriginale, maskRosa, "GlobuloRosso", fileName, csvFile);
+
+
 
             // =====================================================================
             // DASHBOARD
@@ -162,8 +236,9 @@ int main() {
             if (key == 27) break; // ESC per uscire
         }
         std::cout << "\n[FINE] Elaborazione completata con sezioni separate!" << std::endl;
-    }
-    catch (const std::exception& e) {
+    }// Fine del ciclo for
+
+         catch (const std::exception& e) {
         std::cerr << "Errore a runtime: " << e.what() << std::endl;
     }
     return 0;
