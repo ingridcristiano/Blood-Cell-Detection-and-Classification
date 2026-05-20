@@ -58,19 +58,16 @@ int main() {
         // 0. SETUP PERCORSI
         // =========================================================================
 
-        std::string folderOriginali = "C:\\Users\\giorg\\OneDrive\\Desktop\\progetto_m_l_1\\example_images\\";
-        std::string folderAnnotate = "C:\\Users\\giorg\\OneDrive\\Desktop\\progetto_m_l_1\\output\\";
 
-        std::string outFolderBianchi = "C:\\Users\\giorg\\OneDrive\\Desktop\\progetto_m_l_1\\output_bianchi\\";
-        std::string outFolderPiastrine = "C:\\Users\\giorg\\OneDrive\\Desktop\\progetto_m_l_1\\output_piastrine\\";
-        std::string outFolderRossi = "C:\\Users\\giorg\\OneDrive\\Desktop\\progetto_m_l_1\\output_rossi\\";
+        std::string folderOriginali = "example_images/";
+        std::string folderAnnotate = "output/";
+        std::string outFolderBianchi = "output_bianchi/";
+        std::string outFolderPiastrine = "output_piastrine/";
+        std::string outFolderRossi = "output_rossi/";
 
-        	/*	std::string folderOriginali = "C:\\Template-C-\\example_images\\";
-			std::string folderAnnotate = "C:\\Template-C-\\output\\";
+        // Anche il CSV deve usare un percorso relativo
+        std::string csvPath = "features_cellule.csv";
 
-			std::string outFolderBianchi = "C:\\Template-C-\\output_bianchi\\";
-			std::string outFolderPiastrine = "C:\\Template-C-\\output_piastrine\\";
-			std::string outFolderRossi = "C:\\Template-C-\\output_rossi\\";*/
 
         fs::create_directories(outFolderBianchi);
         fs::create_directories(outFolderPiastrine);
@@ -92,7 +89,8 @@ int main() {
         // ... (il tuo codice di setup delle cartelle) ...
 
         // SETUP FILE CSV PER LE FEATURE
-        std::string csvPath = "C:\\Users\\giorg\\OneDrive\\Desktop\\progetto_m_l_1\\features_cellule.csv";
+
+      
         std::ofstream csvFile(csvPath);
         if (!csvFile.is_open()) {
             std::cerr << "ERRORE: Impossibile creare il file CSV." << std::endl;
