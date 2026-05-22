@@ -1,0 +1,58 @@
+{
+    "description": "",
+    "tags": [],
+    "size": {
+        "height": 480,
+        "width": 640
+    },
+    "objects": [
+        {
+            "id": 7790421,
+            "classId": 13303,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:50.871Z",
+            "updatedAt": "2023-06-22T21:03:50.871Z",
+            "tags": [],
+            "classTitle": "WBC",
+            "points": {
+                "exterior": [
+                    [
+                        243,
+                        128
+                    ],
+                    [
+                        388,
+                        291
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7790420,
+            "classId": 13304,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:50.871Z",
+            "updatedAt": "2023-06-22T21:03:50.871Z",
+            "tags": [],
+            "classTitle": "Platelets",
+            "points": {
+                "exterior": [
+                    [
+                        300,
+                        87
+                    ],
+                    [
+                        334,
+                        130
+                    ]
+                ],
+                "interior": []
+            }
+        }
+    ]
+}
