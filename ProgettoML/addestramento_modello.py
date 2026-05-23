@@ -1,52 +1,87 @@
 import pandas as pd
+import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.impute import SimpleImputer  # <--- NOVITÀ: Il chirurgo dei dati mancanti!
+from sklearn.semi_supervised import LabelSpreading
+from sklearn.metrics import classification_report
 
 
-def train_modello_finale():
+def train_semi_supervised():
     print("1. Caricamento del dataset validato...")
-    # Leggiamo il file che contiene la verità assoluta!
     df = pd.read_csv('features_cellule_VALIDATE.csv')
 
-    # 2. SELEZIONE DELLE FEATURE (Le tue invenzioni in C++)
     features = ['Area', 'Perimeter', 'Circularity', 'AspectRatio', 'MeanBlue', 'MeanGreen', 'MeanRed']
     X = df[features].values
 
-    # La nostra Y (il target) ora è la colonna perfetta creata col JSON!
-    y = df['GroundTruth_Label'].values
+    # -------------------------------------------------------------------
+    # CREAZIONE DELLE ETICHETTE IBRIDE
+    # -------------------------------------------------------------------
+    y_semi = []
+    mappa_classi = {'GlobuloBianco': 0, 'GlobuloRosso': 1, 'Piastrina': 2, 'Rumore': 3}
 
-    # 3. DIVISIONE DEI DATI (80% per studiare, 20% per fare l'esame finale)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    for index, row in df.iterrows():
+        label_medico = row['GroundTruth_Label']
+        label_cpp = row['CellType']
 
-    # 4. STANDARDIZZAZIONE
-    print("2. Standardizzazione matematica...")
+        if label_medico in ['GlobuloBianco', 'GlobuloRosso', 'Piastrina']:
+            y_semi.append(mappa_classi[label_medico])
+        else:
+            if label_cpp == 'Piastrina':
+                y_semi.append(mappa_classi['Rumore'])
+            elif label_cpp == 'GlobuloRosso':
+                y_semi.append(-1)  # Lo Sconosciuto
+            elif label_cpp == 'GlobuloBianco':
+                y_semi.append(mappa_classi['Rumore'])
+
+    y_semi = np.array(y_semi)
+
+    certi = len(y_semi[y_semi != -1])
+    sconosciuti = len(y_semi[y_semi == -1])
+    print(f" -> Dati Certi (Ancore + Rumore sicuro): {certi}")
+    print(f" -> Globuli Rossi Sconosciuti (-1) lasciati all'IA: {sconosciuti}")
+
+    # ===================================================================
+    # 2. PULIZIA DEI DATI MANCANTI (Imputation) E STANDARDIZZAZIONE
+    # ===================================================================
+    print("\n2. Pulizia dei dati mancanti (NaN) e Standardizzazione...")
+
+    # Questo strumento cerca i NaN e li sostituisce con la MEDIA di quella colonna
+    imputer = SimpleImputer(strategy='mean')
+    X_clean = imputer.fit_transform(X)
+
+    # Ora passiamo i dati "puliti" allo scaler
     scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
+    X_scaled = scaler.fit_transform(X_clean)
 
-    # 5. ADDESTRAMENTO DELL'INTELLIGENZA ARTIFICIALE
-    print("3. Addestramento della Random Forest in corso...")
-    # Usiamo 100 "Alberi decisionali" che voteranno insieme
-    rf_model = RandomForestClassifier(n_estimators=100, random_state=42, class_weight='balanced')
-    rf_model.fit(X_train_scaled, y_train)
+    # ===================================================================
+    # 3. ADDESTRAMENTO SEMI-SUPERVISIONATO
+    # ===================================================================
+    print("3. Avvio propagazione virale delle etichette (Label Spreading)...")
+    modello_semi = LabelSpreading(kernel='knn', n_neighbors=7, alpha=0.2)
+    modello_semi.fit(X_scaled, y_semi)
 
-    # 6. L'ESAME FINALE
-    print("4. Valutazione sui dati mai visti prima...\n")
-    y_pred = rf_model.predict(X_test_scaled)
+    # 4. Estrazione dei risultati
+    y_transduced = modello_semi.transduction_
 
+    mask_sconosciuti = (y_semi == -1)
+    predizioni_sconosciuti = y_transduced[mask_sconosciuti]
+
+    print("\n======================================================")
+    print(" 🦠 RISULTATI DELLA PROPAGAZIONE SUI ROSSI NON ANNOTATI ")
     print("======================================================")
-    print(" 🏆 PAGELLA FINALE DEL MACHINE LEARNING ")
-    print("======================================================")
-    print(classification_report(y_test, y_pred))
+    unique, counts = np.unique(predizioni_sconosciuti, return_counts=True)
+    for u, c in zip(unique, counts):
+        nome_classe = list(mappa_classi.keys())[list(mappa_classi.values()).index(u)]
+        print(f" - Rossi sospetti trasformati in [{nome_classe}]: {c}")
 
-    print("\n[IMPORTANZA DELLE FEATURE]")
-    # Scopriamo quali feature matematiche sono state le più utili per l'IA!
-    importances = rf_model.feature_importances_
-    for f, imp in zip(features, importances):
-        print(f" - {f}: {imp * 100:.1f}%")
+    nomi_predetti = [list(mappa_classi.keys())[list(mappa_classi.values()).index(val)] for val in y_transduced]
+    df['CellType_Predetto_ML'] = nomi_predetti
+    df.to_csv('features_cellule_corretto_da_ML.csv', index=False)
+
+    print(
+        "\n[FINE] Il dataset corretto dall'Intelligenza Artificiale è stato salvato in 'features_cellule_corretto_da_ML.csv'!")
 
 
 if __name__ == "__main__":
-    train_modello_finale()
+    train_semi_supervised()
