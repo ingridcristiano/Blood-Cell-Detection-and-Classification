@@ -1,0 +1,1 @@
+BCCD: Blood Cell Count and Detection is under [MIT](https://github.com/Shenggan/BCCD_Dataset/blob/master/LICENSE) license.

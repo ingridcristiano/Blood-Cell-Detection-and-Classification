@@ -1,0 +1,466 @@
+{
+    "description": "",
+    "tags": [],
+    "size": {
+        "height": 480,
+        "width": 640
+    },
+    "objects": [
+        {
+            "id": 7791560,
+            "classId": 13303,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:54.387Z",
+            "updatedAt": "2023-06-22T21:03:54.387Z",
+            "tags": [],
+            "classTitle": "WBC",
+            "points": {
+                "exterior": [
+                    [
+                        107,
+                        212
+                    ],
+                    [
+                        270,
+                        347
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7791559,
+            "classId": 13302,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:54.387Z",
+            "updatedAt": "2023-06-22T21:03:54.387Z",
+            "tags": [],
+            "classTitle": "RBC",
+            "points": {
+                "exterior": [
+                    [
+                        245,
+                        86
+                    ],
+                    [
+                        370,
+                        198
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7791558,
+            "classId": 13302,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:54.387Z",
+            "updatedAt": "2023-06-22T21:03:54.387Z",
+            "tags": [],
+            "classTitle": "RBC",
+            "points": {
+                "exterior": [
+                    [
+                        47,
+                        165
+                    ],
+                    [
+                        140,
+                        259
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7791557,
+            "classId": 13302,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:54.387Z",
+            "updatedAt": "2023-06-22T21:03:54.387Z",
+            "tags": [],
+            "classTitle": "RBC",
+            "points": {
+                "exterior": [
+                    [
+                        12,
+                        76
+                    ],
+                    [
+                        145,
+                        179
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7791556,
+            "classId": 13302,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:54.387Z",
+            "updatedAt": "2023-06-22T21:03:54.387Z",
+            "tags": [],
+            "classTitle": "RBC",
+            "points": {
+                "exterior": [
+                    [
+                        195,
+                        346
+                    ],
+                    [
+                        296,
+                        447
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7791555,
+            "classId": 13302,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:54.386Z",
+            "updatedAt": "2023-06-22T21:03:54.386Z",
+            "tags": [],
+            "classTitle": "RBC",
+            "points": {
+                "exterior": [
+                    [
+                        120,
+                        358
+                    ],
+                    [
+                        221,
+                        459
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7791554,
+            "classId": 13302,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:54.386Z",
+            "updatedAt": "2023-06-22T21:03:54.386Z",
+            "tags": [],
+            "classTitle": "RBC",
+            "points": {
+                "exterior": [
+                    [
+                        83,
+                        356
+                    ],
+                    [
+                        184,
+                        457
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7791553,
+            "classId": 13302,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:54.386Z",
+            "updatedAt": "2023-06-22T21:03:54.386Z",
+            "tags": [],
+            "classTitle": "RBC",
+            "points": {
+                "exterior": [
+                    [
+                        15,
+                        356
+                    ],
+                    [
+                        116,
+                        457
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7791552,
+            "classId": 13302,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:54.386Z",
+            "updatedAt": "2023-06-22T21:03:54.386Z",
+            "tags": [],
+            "classTitle": "RBC",
+            "points": {
+                "exterior": [
+                    [
+                        310,
+                        309
+                    ],
+                    [
+                        411,
+                        410
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7791551,
+            "classId": 13302,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:54.386Z",
+            "updatedAt": "2023-06-22T21:03:54.386Z",
+            "tags": [],
+            "classTitle": "RBC",
+            "points": {
+                "exterior": [
+                    [
+                        417,
+                        304
+                    ],
+                    [
+                        518,
+                        405
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7791550,
+            "classId": 13302,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:54.386Z",
+            "updatedAt": "2023-06-22T21:03:54.386Z",
+            "tags": [],
+            "classTitle": "RBC",
+            "points": {
+                "exterior": [
+                    [
+                        485,
+                        197
+                    ],
+                    [
+                        586,
+                        298
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7791549,
+            "classId": 13302,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:54.385Z",
+            "updatedAt": "2023-06-22T21:03:54.385Z",
+            "tags": [],
+            "classTitle": "RBC",
+            "points": {
+                "exterior": [
+                    [
+                        474,
+                        2
+                    ],
+                    [
+                        589,
+                        111
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7791548,
+            "classId": 13302,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:54.385Z",
+            "updatedAt": "2023-06-22T21:03:54.385Z",
+            "tags": [],
+            "classTitle": "RBC",
+            "points": {
+                "exterior": [
+                    [
+                        358,
+                        1
+                    ],
+                    [
+                        474,
+                        95
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7791547,
+            "classId": 13302,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:54.385Z",
+            "updatedAt": "2023-06-22T21:03:54.385Z",
+            "tags": [],
+            "classTitle": "RBC",
+            "points": {
+                "exterior": [
+                    [
+                        111,
+                        1
+                    ],
+                    [
+                        227,
+                        95
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7791546,
+            "classId": 13302,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:54.385Z",
+            "updatedAt": "2023-06-22T21:03:54.385Z",
+            "tags": [],
+            "classTitle": "RBC",
+            "points": {
+                "exterior": [
+                    [
+                        131,
+                        77
+                    ],
+                    [
+                        247,
+                        172
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7791545,
+            "classId": 13304,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:54.383Z",
+            "updatedAt": "2023-06-22T21:03:54.383Z",
+            "tags": [],
+            "classTitle": "Platelets",
+            "points": {
+                "exterior": [
+                    [
+                        1,
+                        19
+                    ],
+                    [
+                        45,
+                        61
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7791544,
+            "classId": 13304,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:54.383Z",
+            "updatedAt": "2023-06-22T21:03:54.383Z",
+            "tags": [],
+            "classTitle": "Platelets",
+            "points": {
+                "exterior": [
+                    [
+                        548,
+                        293
+                    ],
+                    [
+                        583,
+                        324
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7791543,
+            "classId": 13302,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:54.382Z",
+            "updatedAt": "2023-06-22T21:03:54.382Z",
+            "tags": [],
+            "classTitle": "RBC",
+            "points": {
+                "exterior": [
+                    [
+                        377,
+                        171
+                    ],
+                    [
+                        502,
+                        283
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7791542,
+            "classId": 13302,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:54.382Z",
+            "updatedAt": "2023-06-22T21:03:54.382Z",
+            "tags": [],
+            "classTitle": "RBC",
+            "points": {
+                "exterior": [
+                    [
+                        487,
+                        391
+                    ],
+                    [
+                        574,
+                        479
+                    ]
+                ],
+                "interior": []
+            }
+        }
+    ]
+}

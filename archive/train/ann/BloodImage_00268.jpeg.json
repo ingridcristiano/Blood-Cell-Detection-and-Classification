@@ -1,0 +1,34 @@
+{
+    "description": "",
+    "tags": [],
+    "size": {
+        "height": 480,
+        "width": 640
+    },
+    "objects": [
+        {
+            "id": 7789041,
+            "classId": 13303,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:43.066Z",
+            "updatedAt": "2023-06-22T21:03:43.066Z",
+            "tags": [],
+            "classTitle": "WBC",
+            "points": {
+                "exterior": [
+                    [
+                        124,
+                        1
+                    ],
+                    [
+                        328,
+                        172
+                    ]
+                ],
+                "interior": []
+            }
+        }
+    ]
+}
