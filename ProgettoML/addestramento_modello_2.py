@@ -27,20 +27,18 @@ def train_semi_supervised():
     mappa_classi = {'GlobuloBianco': 0, 'GlobuloRosso': 1, 'Piastrina': 2, 'Rumore': 3}
 
     for index, row in df.iterrows():
-        label_medico = row['GroundTruth_Label']
-        label_cpp = row['CellType']
+        label_medico = row.get('GroundTruth_Label', np.nan)
 
-        if label_medico in ['GlobuloBianco', 'GlobuloRosso', 'Piastrina']:
+        # 1. Se il medico ha validato la cellula (che sia una cellula reale o vero rumore)
+        if pd.notna(label_medico) and label_medico in mappa_classi:
             y_semi.append(mappa_classi[label_medico])
-        else:
-            if label_cpp == 'Piastrina':
-                y_semi.append(mappa_classi['Rumore'])
-            elif label_cpp == 'GlobuloRosso':
-                y_semi.append(-1)  # Sconosciuto da correggere
-            elif label_cpp == 'GlobuloBianco':
-                y_semi.append(mappa_classi['Rumore'])
 
-    y_semi = np.array(y_semi)
+        # 2. Se NON c'è validazione medica, la cellula è IGNOTA (-1)
+        # Lasciamo che sia il Label Spreading a capire cos'è!
+        else:
+            y_semi.append(-1)
+
+
 
     print("2. Pulizia dei dati mancanti e Standardizzazione...")
     imputer = SimpleImputer(strategy='mean')
@@ -50,7 +48,7 @@ def train_semi_supervised():
     X_scaled = scaler.fit_transform(X_clean)
 
     print("3. Avvio propagazione delle etichette (Label Spreading)...")
-    modello_semi = LabelSpreading(kernel='knn', n_neighbors=7, alpha=0.2)
+    modello_semi = LabelSpreading(kernel='knn', n_neighbors=15, alpha=0.2)
     modello_semi.fit(X_scaled, y_semi)
 
     print("4. Salvataggio modelli nella cartella principale...")

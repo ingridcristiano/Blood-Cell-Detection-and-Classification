@@ -147,8 +147,8 @@ int main() {
                 cv::Mat labelsB, statsB, centroidsB;
                 int nLabelsB = cv::connectedComponentsWithStats(maskViolaGlobale, labelsB, statsB, centroidsB);
                 for (int i = 1; i < nLabelsB; i++) {
-                    // SOGLIA ABBASSATA A 400 per catturare più globuli bianchi!
-                    if (statsB.at<int>(i, cv::CC_STAT_AREA) >= 400) {
+                  
+                    if (statsB.at<int>(i, cv::CC_STAT_AREA) >= 1500) {
                         maskSoloBianchi.setTo(255, labelsB == i);
                     }
                 }
@@ -161,7 +161,7 @@ int main() {
                 cv::Mat kernelBH = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(21, 21));
                 cv::morphologyEx(imgGreen, blackHat, cv::MORPH_BLACKHAT, kernelBH);
                 cv::Mat maskPiastrineRaw;
-                cv::threshold(blackHat, maskPiastrineRaw, 25, 255, cv::THRESH_BINARY);
+                cv::threshold(blackHat, maskPiastrineRaw, 30, 255, cv::THRESH_BINARY);
 
                 cv::Mat areaDaEscludere;
                 cv::dilate(maskSoloBianchi, areaDaEscludere, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(35, 35)));
@@ -174,7 +174,7 @@ int main() {
                 int nLabelsP = cv::connectedComponentsWithStats(maskPiastrineRaw, labelsP, statsP, centroidsP);
                 for (int i = 1; i < nLabelsP; i++) {
                     int area = statsP.at<int>(i, cv::CC_STAT_AREA);
-                    if (area >= 6 && area <= 300) {
+                    if (area >= 15 && area <= 300) {
                         maskSoloPiastrine.setTo(255, labelsP == i);
                     }
                 }
@@ -243,7 +243,7 @@ int main() {
                 }
 
                 // --- ESTRAZIONE FINALE ---
-                extractAndSaveFeatures(imgOriginale, maskSoloBianchi, "GlobuloBianco", fileName, csvFile, imgAnteprima);
+                extractAndSaveFeatures(imgOriginale, maskSoloBianchi, "GlobuloBianco", fileName, csvFile, imgAnteprima, 1500.0);
                 extractAndSaveFeatures(imgOriginale, maskSoloPiastrine, "Piastrina", fileName, csvFile, imgAnteprima);
 
                 for (size_t i = 0; i < listaCentri.size(); i++) {
