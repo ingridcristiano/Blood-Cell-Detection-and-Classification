@@ -67,29 +67,21 @@ struct DatasetConfig {
 
 int main() {
     try {
-        // Creiamo la cartella di destinazione per i CSV (se non esiste già)
-        std::string cartellaProgettoML = "C:\\Progetti\\Template C++\\ProgettoML\\";
+        // =========================================================================
+        // 1. CONFIGURAZIONE DEI PERCORSI RELATIVI (UNIVERSALI)
+        // =========================================================================
+        std::string cartellaProgettoML = "../../ProgettoML/csv/";
         fs::create_directories(cartellaProgettoML);
 
-        // =========================================================================
-        // 1. CONFIGURAZIONE DEI DATASET (TRAIN E TEST)
-        // =========================================================================
         std::vector<DatasetConfig> pipeline = {
             // FASE 1: Dati di addestramento
-            {"example_images/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
+            {"../archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
 
-            // FASE 2: Dati di test
-            {"C:\\Progetti\\Template C++\\archive\\test\\img\\", cartellaProgettoML + "features_cellule_test.csv", "TEST"}
+            // FASE 2: Dati di test 
+            {"../archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}
         };
 
-        std::string folderAnnotate = "output/";
-        std::string outFolderBianchi = "output_bianchi/";
-        std::string outFolderPiastrine = "output_piastrine/";
-        std::string outFolderRossi = "output_rossi/";
-
-        fs::create_directories(outFolderBianchi);
-        fs::create_directories(outFolderPiastrine);
-        fs::create_directories(outFolderRossi);
+        std::string folderAnnotate = "../output/";
 
         cv::Scalar lowerViolaGlobale(78, 23, 161);
         cv::Scalar upperViolaGlobale(134, 255, 252);
@@ -113,13 +105,16 @@ int main() {
                 continue;
             }
 
-            // APERTURA FILE CSV CON FLAG TRUNC (Sovrascrive esplicitamente se esiste già)
+            // APERTURA FILE CSV CON FLAG TRUNC
             std::ofstream csvFile(dataset.outputCsv, std::ios::out | std::ios::trunc);
             if (!csvFile.is_open()) {
                 std::cerr << "[ERRORE] Impossibile creare il file " << dataset.outputCsv << std::endl;
                 continue;
             }
             csvFile << "ImageName,CellType,BoxX,BoxY,BoxW,BoxH,Area,Perimeter,Circularity,AspectRatio,MeanBlue,MeanGreen,MeanRed\n";
+
+            // Variabile di controllo per l'interfaccia visiva
+            bool mostraFinestre = true;
 
             for (size_t f = 0; f < imagePaths.size(); f++) {
                 cv::Mat imgOriginale = cv::imread(imagePaths[f], cv::IMREAD_COLOR);
@@ -246,10 +241,6 @@ int main() {
                     }
                 }
 
-                cv::imwrite(outFolderBianchi + fileName, maskSoloBianchi);
-                cv::imwrite(outFolderPiastrine + fileName, maskSoloPiastrine);
-                cv::imwrite(outFolderRossi + fileName, maskRosa);
-
                 // --- ESTRAZIONE FINALE ---
                 extractAndSaveFeatures(imgOriginale, maskSoloBianchi, "GlobuloBianco", fileName, csvFile, imgAnteprima);
                 extractAndSaveFeatures(imgOriginale, maskSoloPiastrine, "Piastrina", fileName, csvFile, imgAnteprima);
@@ -281,17 +272,24 @@ int main() {
                     }
                 }
 
-                // DASHBOARD VISIVA
-                cv::putText(imgAnteprima, dataset.nomeFase, cv::Point(10, 25), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 0, 0), 2);
+                // --- GESTIONE VISIVA INTELLIGENTE ---
+                if (mostraFinestre) {
+                    cv::putText(imgAnteprima, dataset.nomeFase, cv::Point(10, 25), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 0, 0), 2);
+                    cv::namedWindow("1. GUIDA REALE", cv::WINDOW_NORMAL);
+                    cv::imshow("1. GUIDA REALE", imgAnnotataReale);
+                    cv::namedWindow("7. RISULTATI DA INVIARE AL CSV", cv::WINDOW_NORMAL);
+                    cv::imshow("7. RISULTATI DA INVIARE AL CSV", imgAnteprima);
 
-                cv::namedWindow("1. GUIDA REALE", cv::WINDOW_NORMAL);
-                cv::imshow("1. GUIDA REALE", imgAnnotataReale);
+                    // Aspetta che tu prema un tasto
+                    int key = cv::waitKey(0);
 
-                cv::namedWindow("7. RISULTATI DA INVIARE AL CSV", cv::WINDOW_NORMAL);
-                cv::imshow("7. RISULTATI DA INVIARE AL CSV", imgAnteprima);
-
-                int key = cv::waitKey(0);
-                if (key == 27) break; // Premi ESC per saltare tutte le restanti immagini di questa fase
+                    // Se premi ESC (27)
+                    if (key == 27) {
+                        mostraFinestre = false; // Non mostra più le finestre per le prossime immagini
+                        cv::destroyAllWindows(); // Chiude quelle aperte
+                        std::cout << "[INFO] Finestre chiuse! Elaborazione in corso in background per completare il CSV..." << std::endl;
+                    }
+                }
             }
             std::cout << "[SUCCESSO] File generato: " << dataset.outputCsv << std::endl;
         }

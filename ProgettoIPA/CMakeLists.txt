@@ -1,66 +1,31 @@
-# Top-Level CmakeLists.txt to build IPA projects
-cmake_minimum_required(VERSION 3.0)
-project( ipa )
+cmake_minimum_required(VERSION 3.10)
+project(ImageProcessingProject)
 
-cmake_policy(SET CMP0054 OLD) 
-cmake_policy(SET CMP0045 OLD)
+# Imposta lo standard C++17 per abilitare <filesystem>
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# hide unused predefined variables
-set (CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} CACHE INTERNAL "")
-
-# include cmake scripts
-include(cmake/utils.cmake)
-
-# require C++11
-set (CMAKE_CXX_STANDARD 11)
-
-# set up library and binary directories
-if(NOT LIBRARY_OUTPUT_PATH)
-  set (LIBRARY_OUTPUT_PATH ${ipa_BINARY_DIR}/libs CACHE INTERNAL "Single output directory for building all libraries.")
-endif(NOT LIBRARY_OUTPUT_PATH)
-if(NOT EXECUTABLE_OUTPUT_PATH)
-  set (EXECUTABLE_OUTPUT_PATH ${ipa_BINARY_DIR}/bin CACHE INTERNAL "Single output directory for building all executables.")
-endif(NOT EXECUTABLE_OUTPUT_PATH)
-
-# set up OpenCV library
+# --- CONFIGURAZIONE OPENCV ---
 find_package(OpenCV REQUIRED)
-if(NOT OpenCV_FOUND)
-  message(FATAL_ERROR "OpenCV library not found or not properly installed")
-endif()
 include_directories(${OpenCV_INCLUDE_DIRS})
-link_directories(${OpenCV_LIB_DIR})
+# ------------------------------
 
-# set up Boost library
-#set(Boost_DEBUG ON)
-#set(BOOST_PATH "" CACHE PATH "Boost library path")
-#set(ENV{BOOST_ROOT} ${BOOST_PATH})
-#find_package(Boost REQUIRED)
-#include_directories( ${Boost_INCLUDE_DIR} )
+# Ora che è dentro la cartella corrente, basta il percorso relativo diretto!
+add_subdirectory(3rdparty/ipalib)
+add_subdirectory(3rdparty/ucaslib)
 
-# set up "Release" and "Debug" as default build mode
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release CACHE STRING 
-        "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel." 
-        FORCE) # Default to Release
-endif()
+# Diciamo al compilatore dove trovare gli header (.h)
+include_directories(3rdparty/ipalib)
+include_directories(3rdparty/ucaslib)
 
-# disable annoying warnings on MSVC compilers
-if (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
-	warnings_disable(CMAKE_CXX_FLAGS /wd4290) # vs2012: can't properly handle exceptions
-	warnings_disable(CMAKE_CXX_FLAGS /wd4996) # vs2012: complains about unsafe standard C++ functions
-	warnings_disable(CMAKE_CXX_FLAGS /wd4530) # vs2012: C++ exception handler used, but unwind semantics are not enabled
-	warnings_disable(CMAKE_CXX_FLAGS /wd4503) # vs2012: decorated name length exceeded
-endif()
+# Trova tutti i file sorgente (.h, .hpp, .cpp) nella cartella corrente
+file(GLOB src *.h *.hpp *.cpp)
 
-# disable annoying warning on Clang
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-varargs")
-endif()
+# Fix va_start error in VS 14+
+add_definitions(-D_CRT_NO_VA_START_VALIDATION)
 
+# Crea l'eseguibile principale
+add_executable(ipaproject ${src})
 
-# define folder where example images are stored
-add_definitions(-DEXAMPLE_IMAGES_PATH="${ipa_SOURCE_DIR}/example_images")
-
-# build modules
-add_subdirectory( 3rdparty )
-add_subdirectory( myproject )
+# Linka l'eseguibile alle librerie interne e a OpenCV
+target_link_libraries(ipaproject ipalib ucaslib ${OpenCV_LIBS})

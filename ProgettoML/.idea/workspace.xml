@@ -1,0 +1,911 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4321e8b8-09d3-40f7-b14a-7e6c0263bad2" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ipalib/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ipalib/haarcascade_frontalface_alt.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ipalib/ipaConfig.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ipalib/ipaConfig.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ucaslib/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ucaslib/google_almostequals.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ucaslib/ucasBreastUtils.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ucaslib/ucasBreastUtils.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ucaslib/ucasConfig.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ucaslib/ucasConfig.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ucaslib/ucasExceptions.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ucaslib/ucasFileUtils.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ucaslib/ucasImageUtils.bkp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ucaslib/ucasImageUtils.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ucaslib/ucasImageUtils.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ucaslib/ucasLog.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ucaslib/ucasMachineLearningUtils.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ucaslib/ucasMachineLearningUtils.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ucaslib/ucasMathUtils.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ucaslib/ucasMultithreading.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ucaslib/ucasMultithreading.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ucaslib/ucasStringUtils.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/3rdparty/ucaslib/ucasTypes.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../ProgettoIPA/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/build/ALL_BUILD.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/../ProgettoIPA/build/ALL_BUILD.vcxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/build/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../ProgettoIPA/build/CMakeCache.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/build/CMakeFiles/3.30.4/CMakeDetermineCompilerABI_C.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../ProgettoIPA/build/CMakeFiles/3.30.4/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/build/CMakeFiles/3.30.4/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../ProgettoIPA/build/CMakeFiles/3.30.4/CMakeDetermineCompilerABI_CXX.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/build/CMakeFiles/3.30.4/CompilerIdC/CompilerIdC.exe" beforeDir="false" afterPath="$PROJECT_DIR$/../ProgettoIPA/build/CMakeFiles/3.30.4/CompilerIdC/CompilerIdC.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/build/CMakeFiles/3.30.4/CompilerIdC/Debug/CMakeCCompilerId.obj" beforeDir="false" afterPath="$PROJECT_DIR$/../ProgettoIPA/build/CMakeFiles/3.30.4/CompilerIdC/Debug/CMakeCCompilerId.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/build/CMakeFiles/3.30.4/CompilerIdCXX/CompilerIdCXX.exe" beforeDir="false" afterPath="$PROJECT_DIR$/../ProgettoIPA/build/CMakeFiles/3.30.4/CompilerIdCXX/CompilerIdCXX.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/build/CMakeFiles/3.30.4/CompilerIdCXX/Debug/CMakeCXXCompilerId.obj" beforeDir="false" afterPath="$PROJECT_DIR$/../ProgettoIPA/build/CMakeFiles/3.30.4/CompilerIdCXX/Debug/CMakeCXXCompilerId.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/build/CMakeFiles/CMakeConfigureLog.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../ProgettoIPA/build/CMakeFiles/CMakeConfigureLog.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/build/CMakeFiles/TargetDirectories.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../ProgettoIPA/build/CMakeFiles/TargetDirectories.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/build/CMakeFiles/generate.stamp.depend" beforeDir="false" afterPath="$PROJECT_DIR$/../ProgettoIPA/build/CMakeFiles/generate.stamp.depend" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/build/CMakeFiles/generate.stamp.list" beforeDir="false" afterPath="$PROJECT_DIR$/../ProgettoIPA/build/CMakeFiles/generate.stamp.list" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/build/Project.sln" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/build/ZERO_CHECK.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/../ProgettoIPA/build/ZERO_CHECK.vcxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/build/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../ProgettoIPA/build/cmake_install.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/build/ipaproject.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/../ProgettoIPA/build/ipaproject.vcxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/myproject/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../ProgettoIPA/myproject/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/myproject/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../ProgettoIPA/myproject/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/ProgettoML.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ProgettoML.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/addestramento_modello_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/addestramento_modello_2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/confronto_feature_reali_1.py" beforeDir="false" afterPath="$PROJECT_DIR$/confronto_feature_reali_1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/features_cellule_VALIDATE.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/features_cellule_corretto_da_ML.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/features_cellule_test.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/features_cellule_train.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/imputer_progetto.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/imputer_progetto.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modello_label_spreading.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/modello_label_spreading.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00001.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00003.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00004.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00005.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00006.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00008.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00009.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00010.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00012.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00013.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00020.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00022.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00023.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00024.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00026.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00032.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00034.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00036.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00038.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00039.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00040.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00042.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00043.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00044.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00045.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00046.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00047.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00048.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00049.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00050.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00052.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00054.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00056.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00059.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00069.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00070.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00071.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00076.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00078.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00079.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00081.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00082.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00083.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00086.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00087.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00090.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00091.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00092.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00094.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00095.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00097.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00100.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00101.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00106.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00107.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00108.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00110.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00112.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00113.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00114.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00117.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00120.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00123.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00124.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00126.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00127.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00133.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00134.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00139.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00141.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00142.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00144.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00150.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00154.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00156.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00158.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00159.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00160.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00163.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00164.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00165.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00166.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00168.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00170.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00174.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00175.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00176.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00177.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00179.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00182.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00187.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00189.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00190.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00191.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00195.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00196.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00197.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00198.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00199.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00200.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00201.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00202.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00203.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00204.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00206.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00210.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00211.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00212.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00214.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00215.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00224.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00231.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00232.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00235.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00237.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00239.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00240.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00242.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00243.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00247.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00248.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00250.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00251.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00252.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00254.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00256.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00257.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00258.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00259.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00263.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00264.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00265.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00266.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00267.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00268.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00270.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00273.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00275.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00276.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00278.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00279.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00281.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00283.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00288.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00289.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00291.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00292.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00294.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00295.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00297.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00299.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00300.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00301.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00302.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00305.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00307.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00308.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00309.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00311.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00313.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00314.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00317.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00318.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00322.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00324.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00325.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00332.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00335.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00336.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00339.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00343.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00344.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00345.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00347.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00348.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00351.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00353.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00354.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00355.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00356.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00357.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00359.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00361.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00362.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00364.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00369.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00370.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00371.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00372.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00374.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00376.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00377.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00378.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00379.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00382.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00384.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00387.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00388.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00393.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00395.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00400.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00403.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00404.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00405.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/BloodImage_00408.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scaler_progetto.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/scaler_progetto.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00007.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00011.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00015.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00016.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00018.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00019.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00021.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00031.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00033.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00041.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00057.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00058.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00062.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00063.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00065.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00067.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00068.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00074.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00075.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00077.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00088.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00093.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00098.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00103.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00132.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00135.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00136.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00137.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00149.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00157.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00161.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00167.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00169.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00171.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00172.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00178.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00180.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00184.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00205.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00208.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00220.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00225.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00226.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00227.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00229.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00233.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00234.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00249.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00253.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00271.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00282.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00284.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00287.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00290.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00293.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00296.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00303.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00319.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00320.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00323.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00327.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00333.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00341.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00346.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00360.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00365.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00366.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00375.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00385.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00390.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00391.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/ann/BloodImage_00407.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00007.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00011.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00015.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00016.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00018.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00019.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00021.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00031.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00033.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00041.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00057.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00058.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00062.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00063.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00065.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00067.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00068.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00074.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00075.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00077.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00088.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00093.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00098.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00103.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00132.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00135.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00136.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00137.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00149.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00157.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00161.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00167.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00169.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00171.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00172.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00178.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00180.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00184.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00205.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00208.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00220.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00225.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00226.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00227.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00229.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00233.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00234.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00249.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00253.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00271.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00282.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00284.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00287.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00290.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00293.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00296.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00303.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00319.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00320.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00323.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00327.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00333.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00341.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00346.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00360.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00365.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00366.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00375.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00385.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00390.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00391.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/img/BloodImage_00407.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00001.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00003.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00004.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00005.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00006.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00008.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00009.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00010.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00012.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00013.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00020.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00022.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00023.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00024.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00026.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00032.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00034.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00036.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00038.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00039.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00040.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00042.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00043.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00044.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00045.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00046.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00047.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00048.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00049.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00050.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00052.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00054.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00056.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00059.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00069.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00070.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00071.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00076.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00078.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00079.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00081.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00082.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00083.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00086.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00087.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00090.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00091.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00092.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00094.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00095.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00097.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00100.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00101.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00106.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00107.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00108.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00110.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00112.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00113.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00114.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00117.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00120.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00123.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00124.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00126.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00127.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00133.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00134.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00139.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00141.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00142.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00144.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00150.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00154.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00156.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00158.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00159.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00160.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00163.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00164.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00165.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00166.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00168.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00170.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00174.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00175.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00176.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00177.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00179.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00182.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00187.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00189.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00190.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00191.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00195.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00196.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00197.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00198.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00199.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00200.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00201.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00202.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00203.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00204.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00206.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00210.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00211.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00212.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00214.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00215.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00224.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00231.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00232.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00235.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00237.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00239.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00240.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00242.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00243.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00247.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00248.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00250.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00251.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00252.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00254.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00256.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00257.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00258.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00259.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00263.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00264.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00265.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00266.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00267.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00268.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00270.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00273.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00275.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00276.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00278.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00279.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00281.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00283.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00288.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00289.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00291.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00292.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00294.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00295.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00297.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00299.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00300.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00301.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00302.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00305.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00307.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00308.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00309.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00311.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00313.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00314.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00317.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00318.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00322.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00324.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00325.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00332.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00335.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00336.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00339.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00343.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00344.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00345.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00347.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00348.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00351.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00353.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00354.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00355.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00356.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00357.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00359.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00361.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00362.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00364.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00369.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00370.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00371.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00372.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00374.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00376.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00377.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00378.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00379.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00382.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00384.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00387.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00388.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00393.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00395.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00400.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00403.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00404.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00405.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/ann/BloodImage_00408.jpeg.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00001.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00003.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00004.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00005.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00006.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00008.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00009.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00010.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00012.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00013.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00020.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00022.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00023.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00024.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00026.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00032.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00034.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00036.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00038.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00039.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00040.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00042.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00043.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00044.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00045.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00046.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00047.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00048.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00049.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00050.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00052.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00054.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00056.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00059.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00069.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00070.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00071.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00076.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00078.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00079.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00081.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00082.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00083.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00086.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00087.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00090.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00091.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00092.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00094.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00095.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00097.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00100.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00101.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00106.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00107.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00108.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00110.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00112.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00113.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00114.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00117.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00120.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00123.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00124.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00126.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00127.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00133.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00134.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00139.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00141.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00142.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00144.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00150.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00154.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00156.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00158.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00159.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00160.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00163.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00164.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00165.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00166.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00168.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00170.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00174.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00175.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00176.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00177.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00179.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00182.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00187.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00189.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00190.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00191.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00195.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00196.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00197.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00198.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00199.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00200.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00201.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00202.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00203.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00204.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00206.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00210.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00211.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00212.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00214.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00215.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00224.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00231.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00232.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00235.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00237.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00239.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00240.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00242.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00243.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00247.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00248.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00250.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00251.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00252.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00254.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00256.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00257.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00258.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00259.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00263.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00264.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00265.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00266.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00267.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00268.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00270.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00273.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00275.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00276.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00278.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00279.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00281.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00283.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00288.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00289.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00291.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00292.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00294.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00295.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00297.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00299.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00300.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00301.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00302.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00305.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00307.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00308.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00309.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00311.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00313.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00314.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00317.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00318.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00322.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00324.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00325.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00332.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00335.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00336.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00339.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00343.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00344.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00345.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00347.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00348.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00351.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00353.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00354.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00355.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00356.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00357.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00359.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00361.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00362.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00364.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00369.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00370.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00371.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00372.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00374.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00376.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00377.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00378.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00379.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00382.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00384.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00387.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00388.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00393.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00395.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00400.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00403.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00404.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00405.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train/img/BloodImage_00408.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/valutazione_3.py" beforeDir="false" afterPath="$PROJECT_DIR$/valutazione_3.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="3DcOxr60ooICwjn4vwjuBs2y72n" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.Prog.executor": "Run",
+    "Python.addestramento_modello.executor": "Run",
+    "Python.addestramento_modello_2.executor": "Run",
+    "Python.color_view.executor": "Run",
+    "Python.confronto_feature_reali.executor": "Run",
+    "Python.confronto_feature_reali_1.executor": "Run",
+    "Python.modello.executor": "Run",
+    "Python.retttangoli.executor": "Run",
+    "Python.train.executor": "Run",
+    "Python.valutazione.executor": "Run",
+    "Python.valutazione_3.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Progetti/Progetto_IPA_ML/ProgettoML",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\ingri\PycharmProjects\ProgettoML" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Progetti\Template C++\ProgettoML\altro" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-ce6832f46686-7b97d883f26b-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.25557.178" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4321e8b8-09d3-40f7-b14a-7e6c0263bad2" name="Changes" comment="" />
+      <created>1778578140622</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1778578140622</updated>
+      <workItem from="1779463245176" duration="12000" />
+      <workItem from="1779545076211" duration="22000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
+  </component>
+</project>

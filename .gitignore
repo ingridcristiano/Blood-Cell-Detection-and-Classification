@@ -1,0 +1,16 @@
+# Cache e Build di Visual Studio / C++
+build/
+.vs/
+out/
+*.exe
+*.pdb
+*.ipch
+*.ilk
+
+# Ambienti virtuali e Cache di Python
+.venv/
+venv/
+__pycache__/
+
+# Modelli di Machine Learning (pesanti)
+*.pkl

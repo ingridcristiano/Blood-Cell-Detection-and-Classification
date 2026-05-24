@@ -2,6 +2,7 @@ import pandas as pd
 import json
 import os
 
+
 def calcola_iou(boxA, boxB):
     xA = max(boxA[0], boxB[0])
     yA = max(boxA[1], boxB[1])
@@ -17,27 +18,34 @@ def calcola_iou(boxA, boxB):
 
     return interArea / float(boxAArea + boxBArea - interArea)
 
+
 def valida_dati():
-    print("1. Caricamento del dataset C++ di ADDESTRAMENTO (features_cellule_train.csv)...")
+    # --- PERCORSI RELATIVI ---
+    # Il CSV si trova nella sottocartella 'csv' generata dal C++
+    percorso_csv_input = os.path.join('csv', 'features_cellule_train.csv')
+    percorso_csv_output = os.path.join('csv', 'features_cellule_VALIDATE.csv')
+
+    # ../ ci fa uscire da ProgettoML, per poi entrare in ProgettoIPA/...
+    cartella_ann = os.path.join('..', 'ProgettoIPA', 'archive', 'train', 'ann')
+
+    soglia_iou = 0.01
+
+    print(f"1. Caricamento del dataset C++ di ADDESTRAMENTO ({percorso_csv_input})...")
     try:
-        df = pd.read_csv('features_cellule_train.csv', sep=None, engine='python')
+        df = pd.read_csv(percorso_csv_input, sep=None, engine='python')
         df.columns = df.columns.str.strip()
         df['ImageName'] = df['ImageName'].astype(str).str.strip()
     except Exception as e:
-        print(f"ERRORE: Impossibile leggere il CSV: {e}")
+        print(f"ERRORE: Impossibile leggere il CSV. Verifica che il C++ lo abbia generato: {e}")
         return
 
     df['GroundTruth_Label'] = 'Rumore'
     df['IoU_Score'] = 0.0
 
-    # --- PERCORSO DELLA CARTELLA DEI JSON ---
-    cartella_ann = r'C:\Progetti\Template C++\ProgettoML\train\ann'
-    soglia_iou = 0.01
-
     print(f"-> Sto cercando i file JSON esattamente qui: {cartella_ann}")
 
     if not os.path.exists(cartella_ann):
-        print("\n[ALLARME] La cartella non esiste! Controlla di aver scritto bene il percorso.")
+        print("\n[ALLARME] La cartella JSON non esiste! Controlla i percorsi relativi.")
         return
 
     print("2. Incrocio geometrico con i file JSON del medico...")
@@ -100,8 +108,10 @@ def valida_dati():
     print(f"❌ Macchie SCARTATE come rumore: {falsi_positivi}")
     print("=======================================================\n")
 
-    df.to_csv('features_cellule_VALIDATE.csv', index=False)
-    print("File 'features_cellule_VALIDATE.csv' generato con successo!")
+    # Salva il risultato validato nella cartella csv
+    df.to_csv(percorso_csv_output, index=False)
+    print(f"File '{percorso_csv_output}' generato con successo!")
+
 
 if __name__ == '__main__':
     valida_dati()

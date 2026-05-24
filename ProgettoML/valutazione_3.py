@@ -7,17 +7,30 @@ from sklearn.metrics import classification_report
 
 
 def valutazione_sulle_nuove_immagini():
-    file_train = 'features_cellule_corretto_da_ML.csv'
-    file_test = 'features_cellule_test.csv'
+    # --- PERCORSI RELATIVI ---
+    # Punta direttamente alla sottocartella 'csv'
+    file_train = os.path.join('csv', 'features_cellule_corretto_da_ML.csv')
+    file_test = os.path.join('csv', 'features_cellule_test.csv')
 
     # --- CONTROLLO FILE ---
     if not os.path.exists(file_train) or not os.path.exists(file_test):
         print(f"[ERRORE] Manca uno dei file!\n- {file_train}\n- {file_test}")
+        print("Assicurati di aver eseguito il C++ per il test e lo script precedente per il train.")
         return
 
     print("1. Caricamento del materiale di STUDIO e del TEST...")
     df_train = pd.read_csv(file_train)
     df_test = pd.read_csv(file_test)
+
+    # --- LA SOLUZIONE ALL'ERRORE ---
+    # Rimuoviamo eventuali righe completamente vuote
+    df_train = df_train.dropna(subset=['CellType_Predetto_ML'])
+    df_test = df_test.dropna(subset=['CellType'])
+
+    # Forziamo le colonne a essere viste come stringhe di testo purissimo
+    df_train['CellType_Predetto_ML'] = df_train['CellType_Predetto_ML'].astype(str)
+    df_test['CellType'] = df_test['CellType'].astype(str)
+    # -------------------------------
 
     features = ['Area', 'Perimeter', 'Circularity', 'AspectRatio', 'MeanBlue', 'MeanGreen', 'MeanRed']
 
