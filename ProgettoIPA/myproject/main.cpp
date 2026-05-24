@@ -113,7 +113,7 @@ int main() {
             }
             csvFile << "ImageName,CellType,BoxX,BoxY,BoxW,BoxH,Area,Perimeter,Circularity,AspectRatio,MeanBlue,MeanGreen,MeanRed\n";
 
-            // Variabile di controllo per l'interfaccia visiva
+            // VARIABILE DI CONTROLLO: True = Mostra immagini. False = Lavora solo in background
             bool mostraFinestre = true;
 
             for (size_t f = 0; f < imagePaths.size(); f++) {
@@ -147,7 +147,8 @@ int main() {
                 cv::Mat labelsB, statsB, centroidsB;
                 int nLabelsB = cv::connectedComponentsWithStats(maskViolaGlobale, labelsB, statsB, centroidsB);
                 for (int i = 1; i < nLabelsB; i++) {
-                    if (statsB.at<int>(i, cv::CC_STAT_AREA) >= 800) {
+                    // SOGLIA ABBASSATA A 400 per catturare più globuli bianchi!
+                    if (statsB.at<int>(i, cv::CC_STAT_AREA) >= 400) {
                         maskSoloBianchi.setTo(255, labelsB == i);
                     }
                 }
@@ -280,12 +281,12 @@ int main() {
                     cv::namedWindow("7. RISULTATI DA INVIARE AL CSV", cv::WINDOW_NORMAL);
                     cv::imshow("7. RISULTATI DA INVIARE AL CSV", imgAnteprima);
 
-                    // Aspetta che tu prema un tasto
+                    // Aspetta che tu prema un tasto (Barra spaziatrice o Invio) per andare alla prossima immagine
                     int key = cv::waitKey(0);
 
                     // Se premi ESC (27)
                     if (key == 27) {
-                        mostraFinestre = false; // Non mostra più le finestre per le prossime immagini
+                        mostraFinestre = false; // Disattiva le finestre
                         cv::destroyAllWindows(); // Chiude quelle aperte
                         std::cout << "[INFO] Finestre chiuse! Elaborazione in corso in background per completare il CSV..." << std::endl;
                     }
