@@ -5,6 +5,12 @@ from sklearn.impute import SimpleImputer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 
+# --- NUOVE IMPORTAZIONI PER GRAFICO E PERCENTUALE ---
+import matplotlib.pyplot as plt
+from sklearn.metrics import accuracy_score, confusion_matrix, ConfusionMatrixDisplay
+
+
+# ----------------------------------------------------
 
 def valutazione_sulle_nuove_immagini():
     # --- PERCORSI RELATIVI ---
@@ -73,6 +79,32 @@ def valutazione_sulle_nuove_immagini():
     importances = rf_model.feature_importances_
     for f, imp in zip(features, importances):
         print(f" - {f}: {imp * 100:.1f}%")
+
+    # =========================================================================
+    # --- NUOVA SEZIONE AGGIUNTA: CALCOLO EFFICACIA E MATRICE DI CONFUSIONE ---
+    # =========================================================================
+
+    # Calcoliamo e stampiamo la percentuale
+    accuratezza = accuracy_score(y_test_reale, y_pred_nuove)
+    print("\n======================================================")
+    print(f" 🎯 PERCENTUALE FINALE EFFICACIA: {accuratezza * 100:.2f}%")
+    print("======================================================")
+
+    print("\n5. Generazione della Matrice di Confusione...")
+
+    # Creiamo la matrice incrociando i dati reali con le previsioni dell'IA
+    cm = confusion_matrix(y_test_reale, y_pred_nuove, labels=rf_model.classes_)
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=rf_model.classes_)
+
+    # Disegniamo la grafica
+    fig, ax = plt.subplots(figsize=(8, 6))
+    disp.plot(ax=ax, cmap='Blues', xticks_rotation=45)
+
+    plt.title("Matrice di Confusione - Valutazione IA")
+    plt.tight_layout()
+
+    # Apriamo la finestra con il grafico a colori
+    plt.show()
 
 
 if __name__ == "__main__":
