@@ -68,19 +68,28 @@ struct DatasetConfig {
 int main() {
     try {
         // =========================================================================
-        // 1. CONFIGURAZIONE DEI PERCORSI RELATIVI (UNIVERSALI)
+        // 1. CONFIGURAZIONE DEI PERCORSI ASSOLUTI (CORRETTI)
         // =========================================================================
-        std::string cartellaProgettoML = "../../ProgettoML/csv/";
+        // Nota lo slash finale '/' per evitare che i file si accavallino al nome della cartella
+        std::string cartellaProgettoML = "C:/Template-C-/ProgettoML/csv/";
+        //std::string cartellaProgettoML = "../../ProgettoML/csv/";
+
+        // Creiamo la directory (create_directories ignora lo slash finale, quindi funziona perfettamente)
         fs::create_directories(cartellaProgettoML);
 
         std::vector<DatasetConfig> pipeline = {
-            // FASE 1: Dati di addestramento
-            {"../archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
+            // FASE 1: Dati di addestramento (anche qui, slash finale fondamentale per il cv::glob dopo!)
+            {"C:/Template-C-/ProgettoIPA/archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
+            
+           //{"../archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
+
 
             // FASE 2: Dati di test 
-            {"../archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}
+            {"C:/Template-C-/ProgettoIPA/archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}
+            //{"../archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}
         };
 
+        // Occhio a questa se non trova le immagini annotate, nel caso metti il percorso assoluto anche qui!
         std::string folderAnnotate = "../output/";
 
         cv::Scalar lowerViolaGlobale(78, 23, 161);
