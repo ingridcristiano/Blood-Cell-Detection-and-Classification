@@ -8,7 +8,7 @@
 
 namespace fs = std::filesystem;
 
-// Funzione intatta per estrarre le feature dal contorno
+// Funzione AGGIORNATA per estrarre le NUOVE feature dal contorno
 void extractAndSaveFeatures(const cv::Mat& imgOriginale, const cv::Mat& mask,
     const std::string& cellType, const std::string& imageName,
     std::ofstream& csvFile, cv::Mat& imgAnteprima, double minArea = 5.0) {
@@ -29,9 +29,35 @@ void extractAndSaveFeatures(const cv::Mat& imgOriginale, const cv::Mat& mask,
             circolarita = (4.0 * CV_PI * area) / (perimetro * perimetro);
         }
 
+        // --- NUOVE FEATURE GEOMETRICHE ---
+        // 1. Solidity (Convessità: distingue cellule tonde da sporco frastagliato)
+        std::vector<cv::Point> hull;
+        cv::convexHull(contour, hull);
+        double hullArea = cv::contourArea(hull);
+        double solidity = (hullArea > 0) ? (area / hullArea) : 0.0;
+
+        // 2. Extent (Rapporto tra area dell'oggetto e area del Bounding Box)
+        double rectArea = boundingBox.width * boundingBox.height;
+        double extent = (rectArea > 0) ? (area / rectArea) : 0.0;
+        // ---------------------------------
+
         cv::Mat singleCellMask = cv::Mat::zeros(mask.size(), CV_8UC1);
         cv::drawContours(singleCellMask, std::vector<std::vector<cv::Point>>{contour}, -1, cv::Scalar(255), cv::FILLED);
-        cv::Scalar meanColor = cv::mean(imgOriginale, singleCellMask);
+
+        // --- NUOVE FEATURE DI COLORE E TEXTURE ---
+        cv::Mat meanColorMat, stdDevColorMat;
+        cv::meanStdDev(imgOriginale, meanColorMat, stdDevColorMat, singleCellMask);
+
+        // Estraiamo la Media (Colore principale)
+        double meanB = meanColorMat.at<double>(0);
+        double meanG = meanColorMat.at<double>(1);
+        double meanR = meanColorMat.at<double>(2);
+
+        // Estraiamo la Deviazione Standard (Texture/Varianza del colore interno)
+        double stdB = stdDevColorMat.at<double>(0);
+        double stdG = stdDevColorMat.at<double>(1);
+        double stdR = stdDevColorMat.at<double>(2);
+        // -----------------------------------------
 
         cv::Scalar colorBox(0, 255, 0);
         if (cellType == "GlobuloBianco") colorBox = cv::Scalar(255, 0, 0);
@@ -42,6 +68,7 @@ void extractAndSaveFeatures(const cv::Mat& imgOriginale, const cv::Mat& mask,
         cv::putText(imgAnteprima, cellType.substr(0, 3), cv::Point(boundingBox.x, std::max(0, boundingBox.y - 5)),
             cv::FONT_HERSHEY_SIMPLEX, 0.4, colorBox, 1);
 
+        // SALVATAGGIO AGGIORNATO CON TUTTE LE COLONNE
         csvFile << imageName << ","
             << cellType << ","
             << boundingBox.x << ","
@@ -52,9 +79,14 @@ void extractAndSaveFeatures(const cv::Mat& imgOriginale, const cv::Mat& mask,
             << perimetro << ","
             << circolarita << ","
             << aspectRatio << ","
-            << meanColor[0] << ","
-            << meanColor[1] << ","
-            << meanColor[2] << "\n";
+            << meanB << ","
+            << meanG << ","
+            << meanR << ","
+            << stdB << ","   // NUOVO
+            << stdG << ","   // NUOVO
+            << stdR << ","   // NUOVO
+            << solidity << "," // NUOVO
+            << extent << "\n"; // NUOVO
     }
 }
 
@@ -71,22 +103,23 @@ int main() {
         // 1. CONFIGURAZIONE DEI PERCORSI ASSOLUTI (CORRETTI)
         // =========================================================================
         // Nota lo slash finale '/' per evitare che i file si accavallino al nome della cartella
-        std::string cartellaProgettoML = "C:/Template-C-/ProgettoML/csv/";
-        //std::string cartellaProgettoML = "../../ProgettoML/csv/";
+      //  std::string cartellaProgettoML = "C:/Template-C-/ProgettoML/csv/";
+        std::string cartellaProgettoML = "../../ProgettoML/csv/";
+
 
         // Creiamo la directory (create_directories ignora lo slash finale, quindi funziona perfettamente)
         fs::create_directories(cartellaProgettoML);
 
         std::vector<DatasetConfig> pipeline = {
             // FASE 1: Dati di addestramento (anche qui, slash finale fondamentale per il cv::glob dopo!)
-            {"C:/Template-C-/ProgettoIPA/archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
-            
-           //{"../archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
+          //  {"C:/Template-C-/ProgettoIPA/archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
+
+           {"../archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
 
 
-            // FASE 2: Dati di test 
-            {"C:/Template-C-/ProgettoIPA/archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}
-            //{"../archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}
+           // FASE 2: Dati di test 
+        //   {"C:/Template-C-/ProgettoIPA/archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}
+           {"../archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}
         };
 
         // Occhio a questa se non trova le immagini annotate, nel caso metti il percorso assoluto anche qui!
@@ -120,7 +153,9 @@ int main() {
                 std::cerr << "[ERRORE] Impossibile creare il file " << dataset.outputCsv << std::endl;
                 continue;
             }
-            csvFile << "ImageName,CellType,BoxX,BoxY,BoxW,BoxH,Area,Perimeter,Circularity,AspectRatio,MeanBlue,MeanGreen,MeanRed\n";
+
+            // --- HEADER DEL CSV AGGIORNATO CON LE NUOVE FEATURE ---
+            csvFile << "ImageName,CellType,BoxX,BoxY,BoxW,BoxH,Area,Perimeter,Circularity,AspectRatio,MeanBlue,MeanGreen,MeanRed,StdDevBlue,StdDevGreen,StdDevRed,Solidity,Extent\n";
 
             // VARIABILE DI CONTROLLO: True = Mostra immagini. False = Lavora solo in background
             bool mostraFinestre = true;
@@ -156,7 +191,7 @@ int main() {
                 cv::Mat labelsB, statsB, centroidsB;
                 int nLabelsB = cv::connectedComponentsWithStats(maskViolaGlobale, labelsB, statsB, centroidsB);
                 for (int i = 1; i < nLabelsB; i++) {
-                  
+
                     if (statsB.at<int>(i, cv::CC_STAT_AREA) >= 1500) {
                         maskSoloBianchi.setTo(255, labelsB == i);
                     }
