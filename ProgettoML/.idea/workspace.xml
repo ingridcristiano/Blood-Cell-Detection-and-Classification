@@ -5,15 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4321e8b8-09d3-40f7-b14a-7e6c0263bad2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../ProgettoIPA/myproject/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../ProgettoIPA/myproject/main.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modello_supervised.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/verifica_unsupervised.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/addestramento_modello_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/addestramento_modello_2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/confronto_feature_reali_1.py" beforeDir="false" afterPath="$PROJECT_DIR$/confronto_feature_reali_1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/csv/features_cellule_VALIDATE.csv" beforeDir="false" afterPath="$PROJECT_DIR$/csv/features_cellule_VALIDATE.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/csv/features_cellule_corretto_da_ML.csv" beforeDir="false" afterPath="$PROJECT_DIR$/csv/features_cellule_corretto_da_ML.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/csv/features_cellule_test.csv" beforeDir="false" afterPath="$PROJECT_DIR$/csv/features_cellule_test.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/csv/features_cellule_train.csv" beforeDir="false" afterPath="$PROJECT_DIR$/csv/features_cellule_train.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/valutazione_3.py" beforeDir="false" afterPath="$PROJECT_DIR$/valutazione_3.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,34 +32,38 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.Prog.executor&quot;: &quot;Run&quot;,
-    &quot;Python.addestramento_modello.executor&quot;: &quot;Run&quot;,
-    &quot;Python.addestramento_modello_2.executor&quot;: &quot;Run&quot;,
-    &quot;Python.color_view.executor&quot;: &quot;Run&quot;,
-    &quot;Python.confronto_feature_reali.executor&quot;: &quot;Run&quot;,
-    &quot;Python.confronto_feature_reali_1.executor&quot;: &quot;Run&quot;,
-    &quot;Python.modello.executor&quot;: &quot;Run&quot;,
-    &quot;Python.retttangoli.executor&quot;: &quot;Run&quot;,
-    &quot;Python.train.executor&quot;: &quot;Run&quot;,
-    &quot;Python.valutazione.executor&quot;: &quot;Run&quot;,
-    &quot;Python.valutazione_3.executor&quot;: &quot;Run&quot;,
-    &quot;Python.visivo.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Progetti/Progetto_IPA_ML/ProgettoML&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.Prog.executor": "Run",
+    "Python.addestramento_modello.executor": "Run",
+    "Python.addestramento_modello_2.executor": "Run",
+    "Python.c.executor": "Run",
+    "Python.color_view.executor": "Run",
+    "Python.confronto_feature_reali.executor": "Run",
+    "Python.confronto_feature_reali_1.executor": "Run",
+    "Python.modello.executor": "Run",
+    "Python.modello_supervised.executor": "Run",
+    "Python.retttangoli.executor": "Run",
+    "Python.train.executor": "Run",
+    "Python.valutazione.executor": "Run",
+    "Python.valutazione_3.executor": "Run",
+    "Python.verifica_unsupervised.executor": "Run",
+    "Python.visivo.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Progetti/Progetto_IPA_ML/ProgettoML",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\ingri\PycharmProjects\ProgettoML" />

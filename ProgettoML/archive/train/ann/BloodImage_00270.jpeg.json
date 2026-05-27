@@ -1,0 +1,154 @@
+{
+    "description": "",
+    "tags": [],
+    "size": {
+        "height": 480,
+        "width": 640
+    },
+    "objects": [
+        {
+            "id": 7790862,
+            "classId": 13304,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:52.643Z",
+            "updatedAt": "2023-06-22T21:03:52.643Z",
+            "tags": [],
+            "classTitle": "Platelets",
+            "points": {
+                "exterior": [
+                    [
+                        83,
+                        298
+                    ],
+                    [
+                        140,
+                        340
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7790861,
+            "classId": 13304,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:52.642Z",
+            "updatedAt": "2023-06-22T21:03:52.642Z",
+            "tags": [],
+            "classTitle": "Platelets",
+            "points": {
+                "exterior": [
+                    [
+                        349,
+                        327
+                    ],
+                    [
+                        391,
+                        365
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7790860,
+            "classId": 13303,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:52.641Z",
+            "updatedAt": "2023-06-22T21:03:52.641Z",
+            "tags": [],
+            "classTitle": "WBC",
+            "points": {
+                "exterior": [
+                    [
+                        245,
+                        352
+                    ],
+                    [
+                        383,
+                        479
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7790859,
+            "classId": 13302,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:52.641Z",
+            "updatedAt": "2023-06-22T21:03:52.641Z",
+            "tags": [],
+            "classTitle": "RBC",
+            "points": {
+                "exterior": [
+                    [
+                        270,
+                        118
+                    ],
+                    [
+                        372,
+                        210
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7790858,
+            "classId": 13302,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:52.641Z",
+            "updatedAt": "2023-06-22T21:03:52.641Z",
+            "tags": [],
+            "classTitle": "RBC",
+            "points": {
+                "exterior": [
+                    [
+                        314,
+                        87
+                    ],
+                    [
+                        416,
+                        179
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7790857,
+            "classId": 13302,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:52.641Z",
+            "updatedAt": "2023-06-22T21:03:52.641Z",
+            "tags": [],
+            "classTitle": "RBC",
+            "points": {
+                "exterior": [
+                    [
+                        161,
+                        283
+                    ],
+                    [
+                        287,
+                        383
+                    ]
+                ],
+                "interior": []
+            }
+        }
+    ]
+}
