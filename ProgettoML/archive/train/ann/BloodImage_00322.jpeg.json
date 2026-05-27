@@ -1,0 +1,106 @@
+{
+    "description": "",
+    "tags": [],
+    "size": {
+        "height": 480,
+        "width": 640
+    },
+    "objects": [
+        {
+            "id": 7790856,
+            "classId": 13304,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:52.641Z",
+            "updatedAt": "2023-06-22T21:03:52.641Z",
+            "tags": [],
+            "classTitle": "Platelets",
+            "points": {
+                "exterior": [
+                    [
+                        168,
+                        374
+                    ],
+                    [
+                        198,
+                        406
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7790855,
+            "classId": 13304,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:52.641Z",
+            "updatedAt": "2023-06-22T21:03:52.641Z",
+            "tags": [],
+            "classTitle": "Platelets",
+            "points": {
+                "exterior": [
+                    [
+                        527,
+                        244
+                    ],
+                    [
+                        564,
+                        282
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7790854,
+            "classId": 13304,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:52.641Z",
+            "updatedAt": "2023-06-22T21:03:52.641Z",
+            "tags": [],
+            "classTitle": "Platelets",
+            "points": {
+                "exterior": [
+                    [
+                        565,
+                        383
+                    ],
+                    [
+                        602,
+                        421
+                    ]
+                ],
+                "interior": []
+            }
+        },
+        {
+            "id": 7790853,
+            "classId": 13303,
+            "description": "",
+            "geometryType": "rectangle",
+            "labelerLogin": "gr@datasetninja.com",
+            "createdAt": "2023-06-22T21:03:52.641Z",
+            "updatedAt": "2023-06-22T21:03:52.641Z",
+            "tags": [],
+            "classTitle": "WBC",
+            "points": {
+                "exterior": [
+                    [
+                        307,
+                        174
+                    ],
+                    [
+                        528,
+                        387
+                    ]
+                ],
+                "interior": []
+            }
+        }
+    ]
+}

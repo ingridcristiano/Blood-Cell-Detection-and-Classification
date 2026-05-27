@@ -1,0 +1,30 @@
+{
+    "classes": [
+        {
+            "title": "Platelets",
+            "shape": "rectangle",
+            "color": "#7ED321",
+            "geometry_config": {},
+            "id": 13304,
+            "hotkey": ""
+        },
+        {
+            "title": "RBC",
+            "shape": "rectangle",
+            "color": "#D0021B",
+            "geometry_config": {},
+            "id": 13302,
+            "hotkey": ""
+        },
+        {
+            "title": "WBC",
+            "shape": "rectangle",
+            "color": "#4A90E2",
+            "geometry_config": {},
+            "id": 13303,
+            "hotkey": ""
+        }
+    ],
+    "tags": [],
+    "projectType": "images"
+}

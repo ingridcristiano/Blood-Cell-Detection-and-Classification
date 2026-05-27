@@ -80,13 +80,13 @@ int main() {
         std::vector<DatasetConfig> pipeline = {
             // FASE 1: Dati di addestramento (anche qui, slash finale fondamentale per il cv::glob dopo!)
             //{"C:/Template-C-/ProgettoIPA/archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
-            
+
            {"../archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
 
 
-            // FASE 2: Dati di test 
-            //{"C:/Template-C-/ProgettoIPA/archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}
-            {"../archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}
+           // FASE 2: Dati di test 
+           //{"C:/Template-C-/ProgettoIPA/archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}
+           {"../archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}
         };
 
         // Occhio a questa se non trova le immagini annotate, nel caso metti il percorso assoluto anche qui!
@@ -122,6 +122,17 @@ int main() {
             }
             csvFile << "ImageName,CellType,BoxX,BoxY,BoxW,BoxH,Area,Perimeter,Circularity,AspectRatio,MeanBlue,MeanGreen,MeanRed\n";
 
+            // --- INIZIO AGGIUNTA 1: CREAZIONE DEL FILE CSV PER IL CLASSIFICATORE BINARIO ---
+            std::string outputCsvBinario = dataset.outputCsv;
+            size_t posCsv = outputCsvBinario.find(".csv");
+            if (posCsv != std::string::npos) outputCsvBinario.insert(posCsv, "_BINARIO");
+
+            std::ofstream csvBinario(outputCsvBinario, std::ios::out | std::ios::trunc);
+            if (csvBinario.is_open()) {
+                csvBinario << "ImageName,CellType,BoxX,BoxY,BoxW,BoxH,Area,Perimeter,Circularity,AspectRatio,MeanBlue,MeanGreen,MeanRed\n";
+            }
+            // --- FINE AGGIUNTA 1 ---
+
             // VARIABILE DI CONTROLLO: True = Mostra immagini. False = Lavora solo in background
             bool mostraFinestre = true;
 
@@ -146,6 +157,39 @@ int main() {
                 cv::cvtColor(imgBilateral, imgHSV, cv::COLOR_BGR2HSV);
                 cv::cvtColor(imgBilateral, imgGray, cv::COLOR_BGR2GRAY);
 
+                // --- INIZIO AGGIUNTA 2: ESTRAZIONE MASCHERE FOREGROUND E BACKGROUND ---
+                cv::Mat maskAdattiva, maskForeground, maskBackground;
+
+                // Usiamo il threshold adattivo: calcola la soglia localmente! (molto meglio per i vetrini)
+                cv::adaptiveThreshold(imgGray, maskAdattiva, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY_INV, 101, 5);
+
+                maskForeground = cv::Mat::zeros(imgOriginale.size(), CV_8UC1);
+                maskBackground = cv::Mat::zeros(imgOriginale.size(), CV_8UC1);
+
+                std::vector<std::vector<cv::Point>> contoursBin;
+                cv::findContours(maskAdattiva, contoursBin, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+
+                for (size_t i = 0; i < contoursBin.size(); i++) {
+                    double areaBin = cv::contourArea(contoursBin[i]);
+
+                    // Selezioniamo le soglie reali per questa immagine
+                    if (areaBin >= 150.0) {
+                        // Dimensioni da cellula o grumo valido -> Foreground
+                        cv::drawContours(maskForeground, contoursBin, (int)i, cv::Scalar(255), cv::FILLED);
+                    }
+                    else if (areaBin >= 10.0 && areaBin < 150.0) {
+                        // Dimensioni troppo piccole per essere cellule -> Rumore (Background per il ML)
+                        cv::drawContours(maskBackground, contoursBin, (int)i, cv::Scalar(255), cv::FILLED);
+                    }
+                }
+
+                if (csvBinario.is_open()) {
+                    cv::Mat anteprimaFantasma = imgOriginale.clone(); // Immagine dummy per assorbire i quadrati verdi
+                    extractAndSaveFeatures(imgOriginale, maskForeground, "Foreground", fileName, csvBinario, anteprimaFantasma, 150.0);
+                    extractAndSaveFeatures(imgOriginale, maskBackground, "Background", fileName, csvBinario, anteprimaFantasma, 10.0);
+                }
+                // --- FINE AGGIUNTA 2 ---
+
                 // --- BIANCHI ---
                 cv::Mat maskViolaGlobale;
                 cv::inRange(imgHSV, lowerViolaGlobale, upperViolaGlobale, maskViolaGlobale);
@@ -156,7 +200,7 @@ int main() {
                 cv::Mat labelsB, statsB, centroidsB;
                 int nLabelsB = cv::connectedComponentsWithStats(maskViolaGlobale, labelsB, statsB, centroidsB);
                 for (int i = 1; i < nLabelsB; i++) {
-                  
+
                     if (statsB.at<int>(i, cv::CC_STAT_AREA) >= 1500) {
                         maskSoloBianchi.setTo(255, labelsB == i);
                     }
@@ -287,6 +331,14 @@ int main() {
                     cv::putText(imgAnteprima, dataset.nomeFase, cv::Point(10, 25), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 0, 0), 2);
                     cv::namedWindow("1. GUIDA REALE", cv::WINDOW_NORMAL);
                     cv::imshow("1. GUIDA REALE", imgAnnotataReale);
+
+                    // --- INIZIO AGGIUNTA 3: VISUALIZZAZIONE MASCHERE BIANCO/NERO ---
+                    cv::namedWindow("2. MASCHERA FOREGROUND", cv::WINDOW_NORMAL);
+                    cv::imshow("2. MASCHERA FOREGROUND", maskForeground);
+                    cv::namedWindow("3. MASCHERA BACKGROUND", cv::WINDOW_NORMAL);
+                    cv::imshow("3. MASCHERA BACKGROUND", maskBackground);
+                    // --- FINE AGGIUNTA 3 ---
+
                     cv::namedWindow("7. RISULTATI DA INVIARE AL CSV", cv::WINDOW_NORMAL);
                     cv::imshow("7. RISULTATI DA INVIARE AL CSV", imgAnteprima);
 
