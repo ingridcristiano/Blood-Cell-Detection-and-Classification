@@ -73,6 +73,7 @@ int main() {
         // Nota lo slash finale '/' per evitare che i file si accavallino al nome della cartella
         //std::string cartellaProgettoML = "C:/Template-C-/ProgettoML/csv/";
         std::string cartellaProgettoML = "../../ProgettoML/csv/";
+       // std::string cartellaProgettoML = "C:/progetto_cellule/ProgettoML/csv/"; //giorgia
 
         // Creiamo la directory (create_directories ignora lo slash finale, quindi funziona perfettamente)
         fs::create_directories(cartellaProgettoML);
@@ -82,11 +83,14 @@ int main() {
             //{"C:/Template-C-/ProgettoIPA/archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
 
            {"../archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
+          // {"C:/progetto_cellule/ProgettoIPA/archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"}, //giorgia
+
 
 
            // FASE 2: Dati di test 
            //{"C:/Template-C-/ProgettoIPA/archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}
            {"../archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}
+          // { "C:/progetto_cellule/ProgettoIPA/archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST" }  //giorgia
         };
 
         // Occhio a questa se non trova le immagini annotate, nel caso metti il percorso assoluto anche qui!
