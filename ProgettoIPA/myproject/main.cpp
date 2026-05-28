@@ -8,7 +8,7 @@
 
 namespace fs = std::filesystem;
 
-// Funzione intatta per estrarre le feature dal contorno
+// Funzione potenziata per estrarre le feature dal contorno (29 feature totali)
 void extractAndSaveFeatures(const cv::Mat& imgOriginale, const cv::Mat& mask,
     const std::string& cellType, const std::string& imageName,
     std::ofstream& csvFile, cv::Mat& imgAnteprima, double minArea = 5.0) {
@@ -16,23 +16,75 @@ void extractAndSaveFeatures(const cv::Mat& imgOriginale, const cv::Mat& mask,
     std::vector<std::vector<cv::Point>> contours;
     cv::findContours(mask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
+    // Conversione in HSV ed estrazione dei canali per intensità e saturazione (consigliato dal Prof)
+    cv::Mat imgHSV;
+    cv::cvtColor(imgOriginale, imgHSV, cv::COLOR_BGR2HSV);
+
+    std::vector<cv::Mat> hsvChannels;
+    cv::split(imgHSV, hsvChannels);
+    cv::Mat canalSaturazione = hsvChannels[1]; // Canale S (Saturation)
+    cv::Mat canalIntensita = hsvChannels[2];   // Canale V (Value / Intensità)
+
     for (const auto& contour : contours) {
         double area = cv::contourArea(contour);
         if (area < minArea) continue;
 
+        // 1. FEATURE GEOMETRICHE BASE
         double perimetro = cv::arcLength(contour, true);
         cv::Rect boundingBox = cv::boundingRect(contour);
         double aspectRatio = (double)boundingBox.width / (double)boundingBox.height;
+        double circolarita = (perimetro > 0) ? (4.0 * CV_PI * area) / (perimetro * perimetro) : 0.0;
 
-        double circolarita = 0.0;
-        if (perimetro > 0) {
-            circolarita = (4.0 * CV_PI * area) / (perimetro * perimetro);
-        }
-
+        // Maschera della singola cellula corrente
         cv::Mat singleCellMask = cv::Mat::zeros(mask.size(), CV_8UC1);
         cv::drawContours(singleCellMask, std::vector<std::vector<cv::Point>>{contour}, -1, cv::Scalar(255), cv::FILLED);
+
+        // 2. FEATURE DI COLORE STANDARD (BGR)
         cv::Scalar meanColor = cv::mean(imgOriginale, singleCellMask);
 
+        // 3. INTENSITÀ LUMINOSA (Canale V di HSV)
+        cv::Scalar meanInt, stdDevInt;
+        cv::meanStdDev(canalIntensita, meanInt, stdDevInt, singleCellMask);
+        double meanValue = meanInt[0];
+        double textureValueStdDev = stdDevInt[0]; // Texture basata sulla variazione di luminosità
+
+        double minValue, maxValue;
+        cv::minMaxLoc(canalIntensita, &minValue, &maxValue, nullptr, nullptr, singleCellMask);
+
+        // 4. PUREZZA DEL COLORE (Canale S di HSV)
+        cv::Scalar meanSat, stdDevSat;
+        cv::meanStdDev(canalSaturazione, meanSat, stdDevSat, singleCellMask);
+        double meanSaturation = meanSat[0];
+        double textureSatStdDev = stdDevSat[0]; // Texture basata sulla variazione di purezza del colore
+
+        double minSat, maxSat;
+        cv::minMaxLoc(canalSaturazione, &minSat, &maxSat, nullptr, nullptr, singleCellMask);
+
+        // 5. TEXTURE AVANZATA (Laplaciano su Intensità HSV)
+        cv::Mat laplacianImg;
+        cv::Laplacian(canalIntensita, laplacianImg, CV_64F);
+        cv::Scalar meanLap, stdDevLap;
+        cv::meanStdDev(laplacianImg, meanLap, stdDevLap, singleCellMask);
+        double textureLaplacian = stdDevLap[0]; // Rugosità/presenza di bordi netti interni
+
+        // 6. MOMENTI DI HU (BPP) - Invarianti a rotazione e scala
+        cv::Moments mu = cv::moments(contour, false);
+        double huMoments[7];
+        cv::HuMoments(mu, huMoments);
+
+        // Log-trasformazione per stabilizzare i valori matematici per il Machine Learning
+       
+        for (int i = 0; i < 7; i++) {
+            if (huMoments[i] != 0) {
+                // Calcoliamo il segno: 1 se positivo, -1 se negativo
+                double sign = (huMoments[i] > 0) ? 1.0 : -1.0;
+                huMoments[i] = -1.0 * sign * std::log10(std::abs(huMoments[i]));
+            }
+            else {
+                huMoments[i] = 0.0;
+            }
+        }
+        // 7. ANNOTAZIONE VISIVA SUL VETRINO
         cv::Scalar colorBox(0, 255, 0);
         if (cellType == "GlobuloBianco") colorBox = cv::Scalar(255, 0, 0);
         else if (cellType == "GlobuloRosso") colorBox = cv::Scalar(0, 0, 255);
@@ -42,6 +94,7 @@ void extractAndSaveFeatures(const cv::Mat& imgOriginale, const cv::Mat& mask,
         cv::putText(imgAnteprima, cellType.substr(0, 3), cv::Point(boundingBox.x, std::max(0, boundingBox.y - 5)),
             cv::FONT_HERSHEY_SIMPLEX, 0.4, colorBox, 1);
 
+        // 8. SCRITTURA COMPLETA DI TUTTE LE 29 FEATURE SUL CSV
         csvFile << imageName << ","
             << cellType << ","
             << boundingBox.x << ","
@@ -52,9 +105,21 @@ void extractAndSaveFeatures(const cv::Mat& imgOriginale, const cv::Mat& mask,
             << perimetro << ","
             << circolarita << ","
             << aspectRatio << ","
-            << meanColor[0] << ","
-            << meanColor[1] << ","
-            << meanColor[2] << "\n";
+            << meanColor[0] << "," // MeanBlue
+            << meanColor[1] << "," // MeanGreen
+            << meanColor[2] << "," // MeanRed
+            << meanValue << ","    // Intensità Media (V)
+            << minValue << ","     // Intensità Minima (V)
+            << maxValue << ","     // Intensità Massima (V)
+            << meanSaturation << ","// Saturazione Media (S)
+            << minSat << ","       // Saturazione Minima (S)
+            << maxSat << ","       // Saturazione Massima (S)
+            << textureValueStdDev << "," // Texture della Luminosità
+            << textureSatStdDev << ","   // Texture della Saturazione
+            << textureLaplacian << ","   // Rugosità dei dettagli interni
+            << huMoments[0] << "," << huMoments[1] << "," << huMoments[2] << ","
+            << huMoments[3] << "," << huMoments[4] << "," << huMoments[5] << ","
+            << huMoments[6] << "\n";
     }
 }
 
@@ -68,39 +133,29 @@ struct DatasetConfig {
 int main() {
     try {
         // =========================================================================
-        // 1. CONFIGURAZIONE DEI PERCORSI ASSOLUTI (CORRETTI)
+        // 1. CONFIGURAZIONE DEI PERCORSI ASSOLUTI
         // =========================================================================
-        // Nota lo slash finale '/' per evitare che i file si accavallino al nome della cartella
-        //std::string cartellaProgettoML = "C:/Template-C-/ProgettoML/csv/";
-        std::string cartellaProgettoML = "../../ProgettoML/csv/";
-       // std::string cartellaProgettoML = "C:/progetto_cellule/ProgettoML/csv/"; //giorgia
+        std::string cartellaProgettoML = "C:/progetto_cellule/ProgettoML/csv/"; //giorgia
 
-        // Creiamo la directory (create_directories ignora lo slash finale, quindi funziona perfettamente)
+        // Creiamo la directory di output
         fs::create_directories(cartellaProgettoML);
 
         std::vector<DatasetConfig> pipeline = {
-            // FASE 1: Dati di addestramento (anche qui, slash finale fondamentale per il cv::glob dopo!)
-            //{"C:/Template-C-/ProgettoIPA/archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
-
-           {"../archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
-          // {"C:/progetto_cellule/ProgettoIPA/archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"}, //giorgia
-
-
-
-           // FASE 2: Dati di test 
-           //{"C:/Template-C-/ProgettoIPA/archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}
-           {"../archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}
-          // { "C:/progetto_cellule/ProgettoIPA/archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST" }  //giorgia
+           {"C:/progetto_cellule/ProgettoIPA/archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"}, //giorgia
+           {"C:/progetto_cellule/ProgettoIPA/archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}    //giorgia
         };
 
-        // Occhio a questa se non trova le immagini annotate, nel caso metti il percorso assoluto anche qui!
         std::string folderAnnotate = "../output/";
 
+        // Range colore viola globale per i globuli bianchi
         cv::Scalar lowerViolaGlobale(78, 23, 161);
         cv::Scalar upperViolaGlobale(134, 255, 252);
 
+        // Stringa Header aggiornata con i nomi di tutte le 29 colonne
+        std::string csvHeader = "ImageName,CellType,BoxX,BoxY,BoxW,BoxH,Area,Perimeter,Circularity,AspectRatio,MeanBlue,MeanGreen,MeanRed,MeanValue,MinValue,MaxValue,MeanSaturation,MinSat,MaxSat,TextureValue,TextureSat,TextureLaplacian,Hu1,Hu2,Hu3,Hu4,Hu5,Hu6,Hu7\n";
+
         // =========================================================================
-        // 2. CICLO SUI DATASET (Prima elabora il Train, poi il Test)
+        // 2. CICLO SUI DATASET (Train e Test)
         // =========================================================================
         for (const auto& dataset : pipeline) {
             std::cout << "\n=======================================================" << std::endl;
@@ -118,26 +173,24 @@ int main() {
                 continue;
             }
 
-            // APERTURA FILE CSV CON FLAG TRUNC
+            // APERTURA FILE CSV PRINCIPALE
             std::ofstream csvFile(dataset.outputCsv, std::ios::out | std::ios::trunc);
             if (!csvFile.is_open()) {
                 std::cerr << "[ERRORE] Impossibile creare il file " << dataset.outputCsv << std::endl;
                 continue;
             }
-            csvFile << "ImageName,CellType,BoxX,BoxY,BoxW,BoxH,Area,Perimeter,Circularity,AspectRatio,MeanBlue,MeanGreen,MeanRed\n";
+            csvFile << csvHeader; // Scrive l'intestazione aggiornata
 
-            // --- INIZIO AGGIUNTA 1: CREAZIONE DEL FILE CSV PER IL CLASSIFICATORE BINARIO ---
+            // CREAZIONE DEL FILE CSV PER IL CLASSIFICATORE BINARIO
             std::string outputCsvBinario = dataset.outputCsv;
             size_t posCsv = outputCsvBinario.find(".csv");
             if (posCsv != std::string::npos) outputCsvBinario.insert(posCsv, "_BINARIO");
 
             std::ofstream csvBinario(outputCsvBinario, std::ios::out | std::ios::trunc);
             if (csvBinario.is_open()) {
-                csvBinario << "ImageName,CellType,BoxX,BoxY,BoxW,BoxH,Area,Perimeter,Circularity,AspectRatio,MeanBlue,MeanGreen,MeanRed\n";
+                csvBinario << csvHeader; // Scrive l'intestazione aggiornata anche qui
             }
-            // --- FINE AGGIUNTA 1 ---
 
-            // VARIABILE DI CONTROLLO: True = Mostra immagini. False = Lavora solo in background
             bool mostraFinestre = true;
 
             for (size_t f = 0; f < imagePaths.size(); f++) {
@@ -157,14 +210,12 @@ int main() {
                 cv::medianBlur(imgOriginale, imgMedian, 3);
                 cv::bilateralFilter(imgMedian, imgBilateral, 9, 75, 75);
 
-                cv::Mat imgHSV, imgGray;
-                cv::cvtColor(imgBilateral, imgHSV, cv::COLOR_BGR2HSV);
+                cv::Mat imgHSVSub, imgGray;
+                cv::cvtColor(imgBilateral, imgHSVSub, cv::COLOR_BGR2HSV);
                 cv::cvtColor(imgBilateral, imgGray, cv::COLOR_BGR2GRAY);
 
-                // --- INIZIO AGGIUNTA 2: ESTRAZIONE MASCHERE FOREGROUND E BACKGROUND ---
+                // ESTRAZIONE MASCHERE FOREGROUND E BACKGROUND
                 cv::Mat maskAdattiva, maskForeground, maskBackground;
-
-                // Usiamo il threshold adattivo: calcola la soglia localmente! (molto meglio per i vetrini)
                 cv::adaptiveThreshold(imgGray, maskAdattiva, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY_INV, 101, 5);
 
                 maskForeground = cv::Mat::zeros(imgOriginale.size(), CV_8UC1);
@@ -175,28 +226,23 @@ int main() {
 
                 for (size_t i = 0; i < contoursBin.size(); i++) {
                     double areaBin = cv::contourArea(contoursBin[i]);
-
-                    // Selezioniamo le soglie reali per questa immagine
                     if (areaBin >= 150.0) {
-                        // Dimensioni da cellula o grumo valido -> Foreground
                         cv::drawContours(maskForeground, contoursBin, (int)i, cv::Scalar(255), cv::FILLED);
                     }
                     else if (areaBin >= 10.0 && areaBin < 150.0) {
-                        // Dimensioni troppo piccole per essere cellule -> Rumore (Background per il ML)
                         cv::drawContours(maskBackground, contoursBin, (int)i, cv::Scalar(255), cv::FILLED);
                     }
                 }
 
                 if (csvBinario.is_open()) {
-                    cv::Mat anteprimaFantasma = imgOriginale.clone(); // Immagine dummy per assorbire i quadrati verdi
+                    cv::Mat anteprimaFantasma = imgOriginale.clone();
                     extractAndSaveFeatures(imgOriginale, maskForeground, "Foreground", fileName, csvBinario, anteprimaFantasma, 150.0);
                     extractAndSaveFeatures(imgOriginale, maskBackground, "Background", fileName, csvBinario, anteprimaFantasma, 10.0);
                 }
-                // --- FINE AGGIUNTA 2 ---
 
                 // --- BIANCHI ---
                 cv::Mat maskViolaGlobale;
-                cv::inRange(imgHSV, lowerViolaGlobale, upperViolaGlobale, maskViolaGlobale);
+                cv::inRange(imgHSVSub, lowerViolaGlobale, upperViolaGlobale, maskViolaGlobale);
                 cv::morphologyEx(maskViolaGlobale, maskViolaGlobale, cv::MORPH_CLOSE, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(7, 7)));
                 cv::morphologyEx(maskViolaGlobale, maskViolaGlobale, cv::MORPH_OPEN, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(7, 7)));
 
@@ -204,7 +250,6 @@ int main() {
                 cv::Mat labelsB, statsB, centroidsB;
                 int nLabelsB = cv::connectedComponentsWithStats(maskViolaGlobale, labelsB, statsB, centroidsB);
                 for (int i = 1; i < nLabelsB; i++) {
-
                     if (statsB.at<int>(i, cv::CC_STAT_AREA) >= 1500) {
                         maskSoloBianchi.setTo(255, labelsB == i);
                     }
@@ -235,8 +280,6 @@ int main() {
                         maskSoloPiastrine.setTo(255, labelsP == i);
                     }
                 }
-                cv::Mat maskPiastrineVis;
-                cv::dilate(maskSoloPiastrine, maskPiastrineVis, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
 
                 // --- ROSSI ---
                 cv::Mat maskTutteLeCellule;
@@ -293,13 +336,12 @@ int main() {
                             break;
                         }
                     }
-
                     if (!troppoVicino) {
                         listaCentri.push_back(pt);
                     }
                 }
 
-                // --- ESTRAZIONE FINALE ---
+                // --- ESTRAZIONE FINALE COINVOLGENDO LE NUOVE FEATURE ---
                 extractAndSaveFeatures(imgOriginale, maskSoloBianchi, "GlobuloBianco", fileName, csvFile, imgAnteprima, 1500.0);
                 extractAndSaveFeatures(imgOriginale, maskSoloPiastrine, "Piastrina", fileName, csvFile, imgAnteprima);
 
@@ -330,36 +372,30 @@ int main() {
                     }
                 }
 
-                // --- GESTIONE VISIVA INTELLIGENTE ---
+                // GESTIONE INTERFACCIA VISIVA
                 if (mostraFinestre) {
                     cv::putText(imgAnteprima, dataset.nomeFase, cv::Point(10, 25), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 0, 0), 2);
                     cv::namedWindow("1. GUIDA REALE", cv::WINDOW_NORMAL);
                     cv::imshow("1. GUIDA REALE", imgAnnotataReale);
-
-                    // --- INIZIO AGGIUNTA 3: VISUALIZZAZIONE MASCHERE BIANCO/NERO ---
                     cv::namedWindow("2. MASCHERA FOREGROUND", cv::WINDOW_NORMAL);
                     cv::imshow("2. MASCHERA FOREGROUND", maskForeground);
                     cv::namedWindow("3. MASCHERA BACKGROUND", cv::WINDOW_NORMAL);
                     cv::imshow("3. MASCHERA BACKGROUND", maskBackground);
-                    // --- FINE AGGIUNTA 3 ---
-
                     cv::namedWindow("7. RISULTATI DA INVIARE AL CSV", cv::WINDOW_NORMAL);
                     cv::imshow("7. RISULTATI DA INVIARE AL CSV", imgAnteprima);
 
-                    // Aspetta che tu prema un tasto (Barra spaziatrice o Invio) per andare alla prossima immagine
                     int key = cv::waitKey(0);
 
-                    // Se premi ESC (27)
-                    if (key == 27) {
-                        mostraFinestre = false; // Disattiva le finestre
-                        cv::destroyAllWindows(); // Chiude quelle aperte
-                        std::cout << "[INFO] Finestre chiuse! Elaborazione in corso in background per completare il CSV..." << std::endl;
+                    if (key == 27) { // Se premi ESC
+                        mostraFinestre = false;
+                        cv::destroyAllWindows();
+                        std::cout << "[INFO] Finestre chiuse! Elaborazione veloce in background per completare il CSV..." << std::endl;
                     }
                 }
             }
-            std::cout << "[SUCCESSO] File generato: " << dataset.outputCsv << std::endl;
+            std::cout << "[SUCCESSO] File generato con 29 Feature: " << dataset.outputCsv << std::endl;
         }
-        std::cout << "\n[FINE GLOBALE] Pipeline Train & Test completata!" << std::endl;
+        std::cout << "\n[FINE GLOBALE] Pipeline Train & Test completata con successo!" << std::endl;
     }
     catch (const std::exception& e) {
         std::cerr << "Errore a runtime: " << e.what() << std::endl;
