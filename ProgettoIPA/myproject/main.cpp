@@ -135,21 +135,26 @@ int main() {
         // =========================================================================
         // 1. CONFIGURAZIONE DEI PERCORSI ASSOLUTI
         // =========================================================================
-      // std::string cartellaProgettoML = "C:/progetto_cellule/ProgettoIPA/"; //giorgia
-       std::string cartellaProgettoML = "C:/Progetti/Progetto_IPA_ML_ProgettoIPA/"; //ingrid
+      // std::string cartellaProgettoML = "C:/progetto_cellule/ProgettoML/csv/"; //giorgia
+       //std::string cartellaProgettoML = "C:/Template-C-/ProgettoML/csv/";
+        std::string cartellaProgettoML = "../../ProgettoML/csv/"; // <-- CORRETTO: aggiunto punto e virgola
 
         // Creiamo la directory di output
         fs::create_directories(cartellaProgettoML);
 
         std::vector<DatasetConfig> pipeline = {
-   //        {"C:/progetto_cellule/ProgettoIPA/archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"}, //giorgia
-           {"C:/Progetti/Progetto_IPA_ML/ProgettoIPA/archive/train/img", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"}, //ingrid
+            //        {"C:/progetto_cellule/ProgettoIPA/archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"}, //giorgia
 
-//           {"C:/progetto_cellule/ProgettoIPA/archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}    //giorgia
-  //      };
+                    //{"C:/Template-C-/ProgettoIPA/archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
+            {"../archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
 
-        { "C:/Progetti/Progetto_IPA_ML/ProgettoIPA/archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST" }    //ingrid
-    };
+
+            //            {"C:/progetto_cellule/ProgettoIPA/archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}    //giorgia
+              //      };
+
+               //    {"C:/Template-C-/ProgettoIPA/archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}, 
+                 { "../archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST" }
+        };
 
         std::string folderAnnotate = "../output/";
 
