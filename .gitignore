@@ -14,3 +14,11 @@ __pycache__/
 
 # Modelli di Machine Learning (pesanti)
 *.pkl
+
+# Cache e configurazioni specifiche di CMake (Aggiunti ora)
+CMakeCache.txt
+CMakeFiles/
+CMakeSettings.json
+CMakePresets.json
+cmake-build-debug/
+cmake-build-release/
