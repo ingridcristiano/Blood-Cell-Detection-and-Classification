@@ -135,15 +135,21 @@ int main() {
         // =========================================================================
         // 1. CONFIGURAZIONE DEI PERCORSI ASSOLUTI
         // =========================================================================
-        std::string cartellaProgettoML = "C:/progetto_cellule/ProgettoML/csv/"; //giorgia
+      // std::string cartellaProgettoML = "C:/progetto_cellule/ProgettoIPA/"; //giorgia
+       std::string cartellaProgettoML = "C:/Progetti/Progetto_IPA_ML_ProgettoIPA/"; //ingrid
 
         // Creiamo la directory di output
         fs::create_directories(cartellaProgettoML);
 
         std::vector<DatasetConfig> pipeline = {
-           {"C:/progetto_cellule/ProgettoIPA/archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"}, //giorgia
-           {"C:/progetto_cellule/ProgettoIPA/archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}    //giorgia
-        };
+   //        {"C:/progetto_cellule/ProgettoIPA/archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"}, //giorgia
+           {"C:/Progetti/Progetto_IPA_ML/ProgettoIPA/archive/train/img", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"}, //ingrid
+
+//           {"C:/progetto_cellule/ProgettoIPA/archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}    //giorgia
+  //      };
+
+        { "C:/Progetti/Progetto_IPA_ML/ProgettoIPA/archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST" }    //ingrid
+    };
 
         std::string folderAnnotate = "../output/";
 
