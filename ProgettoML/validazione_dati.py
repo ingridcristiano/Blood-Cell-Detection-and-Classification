@@ -40,7 +40,7 @@ def valida_tutto():
 
         # Rispettiamo i nomi esatti che il modello si aspetterà
         if fase == 'train':
-            percorso_csv_output = os.path.join(cartella_csv, 'features_cellule_VALIDATE.csv')
+            percorso_csv_output = os.path.join(cartella_csv, 'features_cellule_train_VALIDATE.csv')
         else:
             percorso_csv_output = os.path.join(cartella_csv, 'features_cellule_test_VALIDATE.csv')
 

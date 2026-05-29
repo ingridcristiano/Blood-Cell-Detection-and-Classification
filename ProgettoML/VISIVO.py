@@ -14,7 +14,7 @@ Per ogni immagine di test mostra due pannelli affiancati:
 Uso:
   - Esegui PRIMA classificatore_cellule.py per generare predizioni_test.csv
   - Poi esegui questo script
-  - Le immagini vengono salvate in csv/risultati/visual/
+  - Le immagini vengono salvate in csv/risultati_supervised/visual/
 =============================================================================
 """
 
@@ -35,7 +35,7 @@ import matplotlib.patches as patches
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # CSV con le predizioni (generato da classificatore_cellule.py)
-PREDICTIONS_CSV = os.path.join(BASE_DIR, "risultati", "predizioni_test.csv")
+PREDICTIONS_CSV = os.path.join(BASE_DIR, "risultati_supervised", "predizioni_test.csv")
 
 # Cartella con le immagini originali di TEST
 # MODIFICA QUESTO PERCORSO per puntare alla cartella img del test set
@@ -45,7 +45,7 @@ TEST_IMG_DIR = os.path.join(BASE_DIR, "..", "ProgettoIPA", "archive", "test", "i
 TEST_ANN_DIR = os.path.join(BASE_DIR, "..", "ProgettoIPA", "archive", "test", "ann")
 
 # Cartella dove salvare le immagini di confronto
-VISUAL_DIR = os.path.join(BASE_DIR, "csv", "risultati", "visual")
+VISUAL_DIR = os.path.join(BASE_DIR, "csv", "risultati_supervised", "visual")
 os.makedirs(VISUAL_DIR, exist_ok=True)
 
 # Quante immagini visualizzare (None = tutte)
