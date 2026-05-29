@@ -73,7 +73,7 @@ void extractAndSaveFeatures(const cv::Mat& imgOriginale, const cv::Mat& mask,
         cv::HuMoments(mu, huMoments);
 
         // Log-trasformazione per stabilizzare i valori matematici per il Machine Learning
-       
+
         for (int i = 0; i < 7; i++) {
             if (huMoments[i] != 0) {
                 // Calcoliamo il segno: 1 se positivo, -1 se negativo
@@ -137,7 +137,7 @@ int main() {
         // =========================================================================
       // std::string cartellaProgettoML = "C:/progetto_cellule/ProgettoML/csv/"; //giorgia
        //std::string cartellaProgettoML = "C:/Template-C-/ProgettoML/csv/";
-        std::string cartellaProgettoML = "../../ProgettoML/csv/"; // <-- CORRETTO: aggiunto punto e virgola
+        std::string cartellaProgettoML = "./csv/"; // <-- CORRETTO: aggiunto punto e virgola
 
         // Creiamo la directory di output
         fs::create_directories(cartellaProgettoML);
@@ -146,7 +146,7 @@ int main() {
             //        {"C:/progetto_cellule/ProgettoIPA/archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"}, //giorgia
 
                     //{"C:/Template-C-/ProgettoIPA/archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
-            {"../archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
+            { "../archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
 
 
             //            {"C:/progetto_cellule/ProgettoIPA/archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}    //giorgia
@@ -192,16 +192,6 @@ int main() {
             }
             csvFile << csvHeader; // Scrive l'intestazione aggiornata
 
-            // CREAZIONE DEL FILE CSV PER IL CLASSIFICATORE BINARIO
-            std::string outputCsvBinario = dataset.outputCsv;
-            size_t posCsv = outputCsvBinario.find(".csv");
-            if (posCsv != std::string::npos) outputCsvBinario.insert(posCsv, "_BINARIO");
-
-            std::ofstream csvBinario(outputCsvBinario, std::ios::out | std::ios::trunc);
-            if (csvBinario.is_open()) {
-                csvBinario << csvHeader; // Scrive l'intestazione aggiornata anche qui
-            }
-
             bool mostraFinestre = true;
 
             for (size_t f = 0; f < imagePaths.size(); f++) {
@@ -224,32 +214,6 @@ int main() {
                 cv::Mat imgHSVSub, imgGray;
                 cv::cvtColor(imgBilateral, imgHSVSub, cv::COLOR_BGR2HSV);
                 cv::cvtColor(imgBilateral, imgGray, cv::COLOR_BGR2GRAY);
-
-                // ESTRAZIONE MASCHERE FOREGROUND E BACKGROUND
-                cv::Mat maskAdattiva, maskForeground, maskBackground;
-                cv::adaptiveThreshold(imgGray, maskAdattiva, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY_INV, 101, 5);
-
-                maskForeground = cv::Mat::zeros(imgOriginale.size(), CV_8UC1);
-                maskBackground = cv::Mat::zeros(imgOriginale.size(), CV_8UC1);
-
-                std::vector<std::vector<cv::Point>> contoursBin;
-                cv::findContours(maskAdattiva, contoursBin, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
-
-                for (size_t i = 0; i < contoursBin.size(); i++) {
-                    double areaBin = cv::contourArea(contoursBin[i]);
-                    if (areaBin >= 150.0) {
-                        cv::drawContours(maskForeground, contoursBin, (int)i, cv::Scalar(255), cv::FILLED);
-                    }
-                    else if (areaBin >= 10.0 && areaBin < 150.0) {
-                        cv::drawContours(maskBackground, contoursBin, (int)i, cv::Scalar(255), cv::FILLED);
-                    }
-                }
-
-                if (csvBinario.is_open()) {
-                    cv::Mat anteprimaFantasma = imgOriginale.clone();
-                    extractAndSaveFeatures(imgOriginale, maskForeground, "Foreground", fileName, csvBinario, anteprimaFantasma, 150.0);
-                    extractAndSaveFeatures(imgOriginale, maskBackground, "Background", fileName, csvBinario, anteprimaFantasma, 10.0);
-                }
 
                 // --- BIANCHI ---
                 cv::Mat maskViolaGlobale;
@@ -388,10 +352,6 @@ int main() {
                     cv::putText(imgAnteprima, dataset.nomeFase, cv::Point(10, 25), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 0, 0), 2);
                     cv::namedWindow("1. GUIDA REALE", cv::WINDOW_NORMAL);
                     cv::imshow("1. GUIDA REALE", imgAnnotataReale);
-                    cv::namedWindow("2. MASCHERA FOREGROUND", cv::WINDOW_NORMAL);
-                    cv::imshow("2. MASCHERA FOREGROUND", maskForeground);
-                    cv::namedWindow("3. MASCHERA BACKGROUND", cv::WINDOW_NORMAL);
-                    cv::imshow("3. MASCHERA BACKGROUND", maskBackground);
                     cv::namedWindow("7. RISULTATI DA INVIARE AL CSV", cv::WINDOW_NORMAL);
                     cv::imshow("7. RISULTATI DA INVIARE AL CSV", imgAnteprima);
 
