@@ -1,387 +1,242 @@
-"""
-=============================================================================
-CONTROLLO VISIVO: ANNOTAZIONI GT vs PREDIZIONI DEL CLASSIFICATORE
-=============================================================================
-Per ogni immagine di test mostra due pannelli affiancati:
-
-  SINISTRA: Immagine originale + Bounding Box del medico (Ground Truth dai JSON)
-  DESTRA:   Immagine originale + Bounding Box dal C++ colorati in base
-            alla predizione dell'AI:
-            - VERDE  = predizione corretta (match con GT)
-            - ROSSO  = predizione sbagliata
-            - GRIGIO = scartato dall'AI (predetto come background)
-
-Uso:
-  - Esegui PRIMA classificatore_cellule.py per generare predizioni_test.csv
-  - Poi esegui questo script
-  - Le immagini vengono salvate in csv/risultati_supervised/visual/
-=============================================================================
-"""
-
 import os
 import json
-import numpy as np
+import glob
+import cv2
 import pandas as pd
-from PIL import Image
-import matplotlib
-
-matplotlib.use('Agg')
+import numpy as np
+import joblib
+import warnings
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
+from sklearn.preprocessing import label_binarize
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix, ConfusionMatrixDisplay, \
+    precision_recall_curve, average_precision_score
 
-# =============================================================================
-# CONFIGURAZIONE PERCORSI
-# =============================================================================
+warnings.filterwarnings('ignore', category=UserWarning)
+
+# =========================================================================
+# 1. CONFIGURAZIONE PERCORSI E FEATURE
+# =========================================================================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# CSV con le predizioni (generato da classificatore_cellule.py)
-PREDICTIONS_CSV = os.path.join(BASE_DIR, "risultati_supervised", "predizioni_test.csv")
+MODELS_DIR = os.path.join(BASE_DIR, "modelli_salvati")
+if not os.path.exists(os.path.join(MODELS_DIR, 'random_forest.pkl')):
+    MODELS_DIR = BASE_DIR
 
-# Cartella con le immagini originali di TEST
-# MODIFICA QUESTO PERCORSO per puntare alla cartella img del test set
-TEST_IMG_DIR = os.path.join(BASE_DIR, "..", "ProgettoIPA", "archive", "test", "img")
+FEATURES = [
+    'Area', 'Perimeter', 'Circularity', 'AspectRatio',
+    'MeanBlue', 'MeanGreen', 'MeanRed', 'MeanValue', 'MinValue', 'MaxValue',
+    'MeanSaturation', 'MinSat', 'MaxSat', 'TextureValue', 'TextureSat', 'TextureLaplacian',
+    'Hu1', 'Hu2', 'Hu3', 'Hu4', 'Hu5', 'Hu6', 'Hu7'
+]
 
-# Cartella con i JSON di annotazione GT per il test
-TEST_ANN_DIR = os.path.join(BASE_DIR, "..", "ProgettoIPA", "archive", "test", "ann")
+# Tutte e 4 le classi incluse
+mappa_inversa = {0: 'GlobuloBianco', 1: 'GlobuloRosso', 2: 'Piastrina', 3: 'Rumore'}
+tutte_le_classi = ['GlobuloBianco', 'GlobuloRosso', 'Piastrina', 'Rumore']
 
-# Cartella dove salvare le immagini di confronto
-VISUAL_DIR = os.path.join(BASE_DIR, "csv", "risultati_supervised", "visual")
-os.makedirs(VISUAL_DIR, exist_ok=True)
-
-# Quante immagini visualizzare (None = tutte)
-MAX_IMAGES = None
-
-# =============================================================================
-# COLORI PER CLASSE
-# =============================================================================
-# Colori per le annotazioni GT (sinistra)
-GT_COLORS = {
-    'WBC': '#2980b9',  # blu
-    'RBC': '#e74c3c',  # rosso
-    'Platelets': '#f1c40f',  # giallo
+colori_classi = {
+    'GlobuloRosso': (0, 0, 255),
+    'GlobuloBianco': (255, 0, 0),
+    'Piastrina': (0, 255, 255),
+    'Rumore': (128, 128, 128)
 }
 
-# Colori per le predizioni AI (destra)
-PRED_CORRECT_COLOR = '#27ae60'  # verde = predizione corretta
-PRED_WRONG_COLOR = '#e74c3c'  # rosso = predizione sbagliata
-PRED_DISCARD_COLOR = '#95a5a6'  # grigio = scartato (background)
-
-# Colori per classe predetta (box interni)
-PRED_CLASS_COLORS = {
-    'WBC': '#2980b9',
-    'RBC': '#e74c3c',
-    'Platelets': '#f1c40f',
-    'background': '#95a5a6',
+testi_brevi = {
+    'GlobuloRosso': 'Rosso',
+    'GlobuloBianco': 'Bianco',
+    'Piastrina': 'Piastrina',
+    'Rumore': 'Rumore'
 }
 
 
-# =============================================================================
-# FUNZIONI
-# =============================================================================
-
-def find_image_file(img_dir, image_name):
-    """Cerca l'immagine originale nella cartella."""
-    path = os.path.join(img_dir, image_name)
-    if os.path.exists(path):
-        return path
-
-    # Prova senza estensione e con varianti
-    base = os.path.splitext(image_name)[0]
-    for ext in ['.jpeg', '.jpg', '.png', '.bmp']:
-        p = os.path.join(img_dir, base + ext)
-        if os.path.exists(p):
-            return p
-    return None
+# =========================================================================
+# 2. FUNZIONI DI VALIDAZIONE
+# =========================================================================
+def compute_iou(boxA, boxB):
+    xA, yA = max(boxA[0], boxB[0]), max(boxA[1], boxB[1])
+    xB, yB = min(boxA[2], boxB[2]), min(boxA[3], boxB[3])
+    interArea = max(0, xB - xA) * max(0, yB - yA)
+    if interArea == 0: return 0.0
+    return interArea / float(
+        ((boxA[2] - boxA[0]) * (boxA[3] - boxA[1])) + ((boxB[2] - boxB[0]) * (boxB[3] - boxB[1])) - interArea)
 
 
-def find_json_file(ann_dir, image_name):
-    """Cerca il JSON di annotazione (formato Supervisely)."""
-    for pattern in [
-        image_name + ".json",
-        image_name.replace('.', '_') + ".json",
-        os.path.splitext(image_name)[0] + ".json",
-    ]:
-        path = os.path.join(ann_dir, pattern)
-        if os.path.exists(path):
-            return path
-    return None
+def valida_dataset_test_completo():
+    print("1. Lettura dei file JSON e assegnazione del Rumore...")
 
+    percorso_csv = os.path.join(BASE_DIR, 'features_cellule_test.csv')
+    if not os.path.exists(percorso_csv):
+        percorso_csv = os.path.join(BASE_DIR, 'csv', 'features_cellule_test.csv')
 
-def load_gt_boxes(json_path):
-    """Carica bounding box GT dal JSON."""
-    with open(json_path, 'r', encoding='utf-8') as f:
-        data = json.load(f)
+    cartella_json = os.path.join(BASE_DIR, 'archive', 'test', 'ann')
 
-    boxes = []
-    for obj in data.get('objects', []):
-        pts = obj['points']['exterior']
-        boxes.append({
-            'x1': pts[0][0], 'y1': pts[0][1],
-            'x2': pts[1][0], 'y2': pts[1][1],
-            'class': obj['classTitle']
-        })
-    return boxes
+    df = pd.read_csv(percorso_csv)
+    df.columns = df.columns.str.strip()
+    df['GroundTruth_Label'] = pd.Series(np.nan, dtype="object")
 
+    for img_name in df['ImageName'].unique():
+        nome_base = os.path.splitext(img_name)[0]
+        file_trovati = glob.glob(os.path.join(cartella_json, nome_base + "*.json"))
+        if not file_trovati: continue
 
-def draw_gt_panel(ax, img, gt_boxes, title="Ground Truth (Annotazioni Medico)"):
-    """Disegna il pannello sinistro con i bounding box GT."""
-    ax.imshow(img)
-    ax.set_title(title, fontsize=11, fontweight='bold', pad=8)
+        with open(file_trovati[0], 'r') as f:
+            dati_ann = json.load(f)
 
-    for box in gt_boxes:
-        x = box['x1']
-        y = box['y1']
-        w = box['x2'] - box['x1']
-        h = box['y2'] - box['y1']
-        cls = box['class']
-        color = GT_COLORS.get(cls, '#ffffff')
+        for idx in df[df['ImageName'] == img_name].index:
+            cpp_box = [df.at[idx, 'BoxX'], df.at[idx, 'BoxY'], df.at[idx, 'BoxX'] + df.at[idx, 'BoxW'],
+                       df.at[idx, 'BoxY'] + df.at[idx, 'BoxH']]
+            miglior_iou, miglior_label = 0.0, None
+            for obj in dati_ann.get('objects', []):
+                pts = obj['points']['exterior']
+                cls = obj['classTitle'].strip().upper()
+                if cls == 'WBC':
+                    cls_name = 'GlobuloBianco'
+                elif cls == 'RBC':
+                    cls_name = 'GlobuloRosso'
+                elif cls in ['PLATELETS', 'PLATELET']:
+                    cls_name = 'Piastrina'
+                else:
+                    cls_name = cls
 
-        rect = patches.Rectangle(
-            (x, y), w, h,
-            linewidth=2, edgecolor=color, facecolor='none'
-        )
-        ax.add_patch(rect)
+                iou = compute_iou(cpp_box, [pts[0][0], pts[0][1], pts[1][0], pts[1][1]])
+                if iou > miglior_iou:
+                    miglior_iou = iou
+                    miglior_label = cls_name
 
-        # Label sopra il box
-        ax.text(
-            x, max(0, y - 4), cls,
-            color='white', fontsize=7, fontweight='bold',
-            bbox=dict(boxstyle='round,pad=0.2', facecolor=color, alpha=0.85)
-        )
+            soglia = 0.1 if miglior_label == 'Piastrina' else 0.35
 
-    ax.axis('off')
-
-    # Legenda
-    legend_elements = []
-    for cls, color in GT_COLORS.items():
-        count = sum(1 for b in gt_boxes if b['class'] == cls)
-        if count > 0:
-            legend_elements.append(
-                patches.Patch(facecolor=color, label=f'{cls} ({count})')
-            )
-    if legend_elements:
-        ax.legend(handles=legend_elements, loc='lower right',
-                  fontsize=7, framealpha=0.8)
-
-
-def draw_pred_panel(ax, img, candidates, title="Predizioni AI"):
-    """
-    Disegna il pannello destro con i candidati C++ colorati per esito AI.
-
-    Verde  = predizione corretta (predicted == true label)
-    Rosso  = predizione sbagliata (predicted != true label, entrambi non-background)
-    Grigio tratteggiato = scartato dall'AI (predetto come background)
-    """
-    ax.imshow(img)
-    ax.set_title(title, fontsize=11, fontweight='bold', pad=8)
-
-    n_correct = 0
-    n_wrong = 0
-    n_discarded = 0
-
-    for _, cand in candidates.iterrows():
-        x = cand['BoxX']
-        y = cand['BoxY']
-        w = cand['BoxW']
-        h = cand['BoxH']
-        pred_label = cand['Predicted_Label']
-        true_label = cand['True_Label']
-
-        # Determina colore e stile
-        if pred_label == 'background':
-            # Scartato dall'AI
-            color = PRED_DISCARD_COLOR
-            linestyle = '--'
-            linewidth = 1
-            label_text = 'SCART'
-            n_discarded += 1
-        elif pred_label == true_label:
-            # Predizione corretta
-            color = PRED_CORRECT_COLOR
-            linestyle = '-'
-            linewidth = 2.5
-            label_text = f'{pred_label} ✓'
-            n_correct += 1
-        else:
-            # Predizione sbagliata
-            color = PRED_WRONG_COLOR
-            linestyle = '-'
-            linewidth = 2.5
-            label_text = f'{pred_label} ✗'
-            n_wrong += 1
-
-        rect = patches.Rectangle(
-            (x, y), w, h,
-            linewidth=linewidth, edgecolor=color,
-            facecolor='none', linestyle=linestyle
-        )
-        ax.add_patch(rect)
-
-        # Label solo per cellule (non per background scartato)
-        if pred_label != 'background':
-            ax.text(
-                x, max(0, y - 4), label_text,
-                color='white', fontsize=6, fontweight='bold',
-                bbox=dict(boxstyle='round,pad=0.2', facecolor=color, alpha=0.85)
-            )
-
-    ax.axis('off')
-
-    # Legenda con conteggi
-    legend_elements = [
-        patches.Patch(facecolor=PRED_CORRECT_COLOR, label=f'Corrette ({n_correct})'),
-        patches.Patch(facecolor=PRED_WRONG_COLOR, label=f'Sbagliate ({n_wrong})'),
-        patches.Patch(facecolor=PRED_DISCARD_COLOR, label=f'Scartate ({n_discarded})'),
-    ]
-    ax.legend(handles=legend_elements, loc='lower right',
-              fontsize=7, framealpha=0.8)
-
-
-def create_summary_image(stats, save_path):
-    """Crea un'immagine riassuntiva con le statistiche globali."""
-    fig, ax = plt.subplots(figsize=(8, 4))
-    ax.axis('off')
-
-    text = "RIEPILOGO CONTROLLO VISIVO\n"
-    text += "=" * 40 + "\n\n"
-    text += f"Immagini analizzate: {stats['n_images']}\n"
-    text += f"Candidati totali:   {stats['n_total']}\n\n"
-    text += f"  ✓ Corrette:   {stats['n_correct']:4d}  ({100 * stats['n_correct'] / max(1, stats['n_total']):.1f}%)\n"
-    text += f"  ✗ Sbagliate:  {stats['n_wrong']:4d}  ({100 * stats['n_wrong'] / max(1, stats['n_total']):.1f}%)\n"
-    text += f"  ⊘ Scartate:   {stats['n_discarded']:4d}  ({100 * stats['n_discarded'] / max(1, stats['n_total']):.1f}%)\n\n"
-    text += "Per classe (solo predizioni non-background):\n"
-    for cls in ['WBC', 'Platelets', 'RBC']:
-        correct = stats.get(f'{cls}_correct', 0)
-        total = stats.get(f'{cls}_total', 0)
-        if total > 0:
-            text += f"  {cls:10s}: {correct}/{total} corrette ({100 * correct / total:.0f}%)\n"
-
-    ax.text(0.05, 0.95, text, transform=ax.transAxes, fontsize=11,
-            verticalalignment='top', fontfamily='monospace',
-            bbox=dict(boxstyle='round', facecolor='#ecf0f1', alpha=0.9))
-
-    fig.tight_layout()
-    plt.savefig(save_path, dpi=150, bbox_inches='tight')
-    plt.close()
-    print(f"  Riepilogo salvato: {save_path}")
-
-
-# =============================================================================
-# MAIN
-# =============================================================================
-
-def main():
-    print("=" * 65)
-    print(" CONTROLLO VISIVO: GT vs PREDIZIONI AI")
-    print("=" * 65)
-
-    # Verifica file
-    if not os.path.exists(PREDICTIONS_CSV):
-        print(f"\n  ERRORE: File predizioni non trovato → {PREDICTIONS_CSV}")
-        print(f"  Esegui prima classificatore_cellule.py!")
-        return
-
-    if not os.path.isdir(TEST_IMG_DIR):
-        print(f"\n  ERRORE: Cartella immagini test non trovata → {TEST_IMG_DIR}")
-        print(f"  Percorso assoluto: {os.path.abspath(TEST_IMG_DIR)}")
-        print(f"  Modifica TEST_IMG_DIR nella sezione CONFIGURAZIONE!")
-        return
-
-    if not os.path.isdir(TEST_ANN_DIR):
-        print(f"\n  ERRORE: Cartella annotazioni test non trovata → {TEST_ANN_DIR}")
-        print(f"  Modifica TEST_ANN_DIR nella sezione CONFIGURAZIONE!")
-        return
-
-    # Carica predizioni
-    pred_df = pd.read_csv(PREDICTIONS_CSV)
-    print(f"\n  Predizioni caricate: {len(pred_df)} candidati")
-
-    # Lista immagini uniche nel test
-    image_names = pred_df['ImageName'].unique()
-    if MAX_IMAGES is not None:
-        image_names = image_names[:MAX_IMAGES]
-
-    print(f"  Immagini da visualizzare: {len(image_names)}")
-
-    # Statistiche globali
-    stats = {
-        'n_images': 0, 'n_total': 0,
-        'n_correct': 0, 'n_wrong': 0, 'n_discarded': 0
-    }
-
-    for idx, img_name in enumerate(image_names):
-        # Trova immagine originale
-        img_path = find_image_file(TEST_IMG_DIR, img_name)
-        if img_path is None:
-            print(f"  [{idx + 1}/{len(image_names)}] {img_name} → immagine non trovata, skip")
-            continue
-
-        # Carica immagine
-        img = np.array(Image.open(img_path))
-
-        # Carica GT
-        json_path = find_json_file(TEST_ANN_DIR, img_name)
-        gt_boxes = load_gt_boxes(json_path) if json_path else []
-
-        # Filtra candidati per questa immagine
-        candidates = pred_df[pred_df['ImageName'] == img_name]
-
-        # Aggiorna statistiche
-        stats['n_images'] += 1
-        stats['n_total'] += len(candidates)
-
-        for _, c in candidates.iterrows():
-            pred = c['Predicted_Label']
-            true = c['True_Label']
-
-            if pred == 'background':
-                stats['n_discarded'] += 1
-            elif pred == true:
-                stats['n_correct'] += 1
-                stats[f'{pred}_correct'] = stats.get(f'{pred}_correct', 0) + 1
-                stats[f'{pred}_total'] = stats.get(f'{pred}_total', 0) + 1
+            # STESSA REGOLA SPIETATA DEL TRAIN:
+            if miglior_iou >= soglia:
+                df.at[idx, 'GroundTruth_Label'] = miglior_label
             else:
-                stats['n_wrong'] += 1
-                stats[f'{pred}_total'] = stats.get(f'{pred}_total', 0) + 1
+                df.at[idx, 'GroundTruth_Label'] = 'Rumore'
 
-        # Crea figura con due pannelli
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
-
-        draw_gt_panel(ax1, img, gt_boxes,
-                      title=f"GT Medico — {img_name}")
-        draw_pred_panel(ax2, img, candidates,
-                        title=f"Predizioni AI — {img_name}")
-
-        fig.suptitle(
-            f"Immagine {idx + 1}/{len(image_names)}: {img_name}",
-            fontsize=13, fontweight='bold', y=1.01
-        )
-        fig.tight_layout()
-
-        # Salva
-        safe_name = os.path.splitext(img_name)[0]
-        save_path = os.path.join(VISUAL_DIR, f"confronto_{safe_name}.png")
-        plt.savefig(save_path, dpi=120, bbox_inches='tight')
-        plt.close()
-
-        # Progresso
-        n_corr = sum(1 for _, c in candidates.iterrows()
-                     if c['Predicted_Label'] == c['True_Label'] and c['Predicted_Label'] != 'background')
-        n_disc = sum(1 for _, c in candidates.iterrows()
-                     if c['Predicted_Label'] == 'background')
-        n_tot = len(candidates)
-
-        print(f"  [{idx + 1}/{len(image_names)}] {img_name}: "
-              f"{n_tot} candidati, {n_corr} corretti, {n_disc} scartati → salvata")
-
-    # Riepilogo
-    print(f"\n  Immagini salvate in: {os.path.abspath(VISUAL_DIR)}")
-    create_summary_image(stats, os.path.join(VISUAL_DIR, "riepilogo.png"))
-
-    print("\n" + "=" * 65)
-    print(" CONTROLLO VISIVO COMPLETATO!")
-    print("=" * 65)
+    return df
 
 
-if __name__ == '__main__':
-    main()
+# =========================================================================
+# 3. ESECUZIONE E GRAFICI
+# =========================================================================
+if __name__ == "__main__":
+    df_test = valida_dataset_test_completo()
+
+    print("2. Caricamento del cervello IA (.pkl)...")
+    imputer = joblib.load(os.path.join(MODELS_DIR, 'imputer_progetto.pkl'))
+    scaler = joblib.load(os.path.join(MODELS_DIR, 'scaler_progetto.pkl'))
+    rf = joblib.load(os.path.join(MODELS_DIR, 'random_forest.pkl'))
+
+    print("3. Esecuzione predizioni...")
+    cols_to_use = [col for col in FEATURES if col in df_test.columns]
+    X_test_scaled = scaler.transform(imputer.transform(df_test[cols_to_use].values))
+
+    df_test['Predicted_Label'] = [mappa_inversa[val] for val in rf.predict(X_test_scaled)]
+    y_proba = rf.predict_proba(X_test_scaled)
+
+    y_true = df_test['GroundTruth_Label']
+    y_pred = df_test['Predicted_Label']
+
+    accuratezza = accuracy_score(y_true, y_pred)
+    print(f"\n🎯 PERCENTUALE EFFICACIA GLOBALE (Con la spazzatura): {accuratezza * 100:.2f}%")
+
+    print("\n📋 REPORT DIAGNOSTICO COMPLETO (Osserva il crollo della precisione!):")
+    print(classification_report(y_true, y_pred, labels=tutte_le_classi, zero_division=0))
+
+    # --- GRAFICO 1: MATRICE DI CONFUSIONE ---
+    print("\n4. Generazione Matrice di Confusione (chiudi la finestra per procedere)...")
+    cm = confusion_matrix(y_true, y_pred, labels=tutte_le_classi)
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=tutte_le_classi)
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+    disp.plot(ax=ax, cmap='Blues', xticks_rotation=45)
+    plt.title(f"Matrice di Confusione - Accuratezza: {accuratezza * 100:.2f}%")
+    plt.tight_layout()
+    plt.show()
+
+    # --- GRAFICO 2: PRECISION-RECALL CURVE ---
+    y_true_bin = label_binarize(y_true, classes=tutte_le_classi)
+    colori_pr = {'GlobuloRosso': 'red', 'GlobuloBianco': 'blue', 'Piastrina': 'orange', 'Rumore': 'gray'}
+
+    fig_pr, ax_pr = plt.subplots(figsize=(8, 6))
+    for i, nome_classe in enumerate(tutte_le_classi):
+        precision, recall, _ = precision_recall_curve(y_true_bin[:, i], y_proba[:, i])
+        ap = average_precision_score(y_true_bin[:, i], y_proba[:, i])
+        ax_pr.plot(recall, precision, lw=2, color=colori_pr.get(nome_classe, 'black'),
+                   label=f'{nome_classe} (AP = {ap:.2f})')
+    plt.legend()
+    plt.title("Curve Precision-Recall")
+    plt.show()
+
+    # =========================================================================
+    # 6. VISUALIZZATORE OPENCV
+    # =========================================================================
+    immagini_da_mostrare = df_test['ImageName'].unique()
+    print(f"\n6. AVVIO VISUALIZZATORE OPENCV...")
+
+    TEST_IMG_DIR = os.path.join(BASE_DIR, "archive", "test", "img")
+    TEST_ANN_DIR = os.path.join(BASE_DIR, "archive", "test", "ann")
+
+    for img_name in immagini_da_mostrare:
+        nome_base = os.path.splitext(img_name)[0]
+        file_raw = glob.glob(os.path.join(TEST_IMG_DIR, nome_base + ".*"))
+        if not file_raw: continue
+
+        img_gt = cv2.imread(file_raw[0])
+        img_ia = img_gt.copy()
+
+        # --- FINESTRA 1: MEDICO ---
+        file_ann = glob.glob(os.path.join(TEST_ANN_DIR, nome_base + "*.json"))
+        if file_ann:
+            with open(file_ann[0], 'r') as f:
+                dati_ann = json.load(f)
+            for obj in dati_ann.get('objects', []):
+                pts = obj['points']['exterior']
+                cls_raw = obj['classTitle'].strip().upper()
+
+                if cls_raw == 'WBC':
+                    cls_name = 'GlobuloBianco'
+                elif cls_raw == 'RBC':
+                    cls_name = 'GlobuloRosso'
+                elif cls_raw in ['PLATELETS', 'PLATELET']:
+                    cls_name = 'Piastrina'
+                else:
+                    cls_name = cls_raw
+
+                colore_medico = colori_classi.get(cls_name, (0, 255, 0))
+                testo_m = testi_brevi.get(cls_name, cls_name)
+
+                cv2.rectangle(img_gt, (pts[0][0], pts[0][1]), (pts[1][0], pts[1][1]), colore_medico, 2)
+                cv2.putText(img_gt, testo_m, (pts[0][0], pts[0][1] - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.4, colore_medico,
+                            1)
+
+        # --- FINESTRA 2: IA ---
+        img_data = df_test[df_test['ImageName'] == img_name]
+
+        for _, row in img_data.iterrows():
+            bx, by, bw, bh = int(row['BoxX']), int(row['BoxY']), int(row['BoxW']), int(row['BoxH'])
+            vera_label = row['GroundTruth_Label']
+            pred_label = row['Predicted_Label']
+
+            colore_ia = colori_classi.get(pred_label, (255, 255, 255))
+
+            # Disegniamo anche il rumore per farti vedere il disastro generato dalle annotazioni parziali
+            if pred_label == 'Rumore':
+                spessore_box = 1
+            else:
+                spessore_box = 2 if pred_label == vera_label else 1
+
+            testo_pred = testi_brevi.get(pred_label, pred_label)
+            testo_vero = testi_brevi.get(vera_label, vera_label)
+
+            testo_finale = f"IA:{testo_pred} | V:{testo_vero}"
+
+            cv2.rectangle(img_ia, (bx, by), (bx + bw, by + bh), colore_ia, spessore_box)
+            cv2.putText(img_ia, testo_finale, (bx, by - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.35, colore_ia, 1, cv2.LINE_AA)
+
+        cv2.imshow(f"1 - JSON Medico", img_gt)
+        cv2.imshow(f"2 - Visione IA", img_ia)
+        cv2.moveWindow("1 - JSON Medico", 50, 50)
+        cv2.moveWindow("2 - Visione IA", 700, 50)
+
+        if cv2.waitKey(0) & 0xFF == 27: break
+
+    cv2.destroyAllWindows()
+    print("\n[FINE] Visualizzazione completata!")
