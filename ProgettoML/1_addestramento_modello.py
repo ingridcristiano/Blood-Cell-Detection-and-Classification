@@ -53,7 +53,6 @@ def carica_e_valida_train():
     print(f"Trovate {len(immagini_uniche)} immagini nel CSV. Analizzo i file JSON in: {CARTELLA_JSON}")
 
     for img_name in immagini_uniche:
-        # Costruiamo il nome del file JSON aspettandoci 'nome.estensione.json'
         file_json = os.path.join(CARTELLA_JSON, img_name + ".json")
 
         if not os.path.exists(file_json):
@@ -61,11 +60,18 @@ def carica_e_valida_train():
 
         with open(file_json, 'r') as f:
             dati_ann = json.load(f)
-            print(f"✅ Trovato JSON per: {img_name}")
+
+        # --- NOVITÀ: Mappiamo i confini sicuri dei Globuli Bianchi decisi dal medico ---
+        box_bianchi_medico = []
+        for obj in dati_ann.get('objects', []):
+            if obj['classTitle'].strip().upper() == 'WBC':
+                pts = obj['points']['exterior']
+                box_bianchi_medico.append([pts[0][0], pts[0][1], pts[1][0], pts[1][1]])
 
         for idx in df[df['ImageName'] == img_name].index:
-            cpp_box = [df.at[idx, 'BoxX'], df.at[idx, 'BoxY'], df.at[idx, 'BoxX'] + df.at[idx, 'BoxW'],
-                       df.at[idx, 'BoxY'] + df.at[idx, 'BoxH']]
+            bx, by = df.at[idx, 'BoxX'], df.at[idx, 'BoxY']
+            bw, bh = df.at[idx, 'BoxW'], df.at[idx, 'BoxH']
+            cpp_box = [bx, by, bx + bw, by + bh]
             area = df.at[idx, 'Area']
 
             miglior_iou, miglior_label = 0.0, None
@@ -87,10 +93,36 @@ def carica_e_valida_train():
                     miglior_label = cls_name
 
             soglia = 0.1 if miglior_label == 'Piastrina' else 0.35
+
             if miglior_iou >= soglia:
+                # È una cellula vera e certificata!
                 df.at[idx, 'GroundTruth_Label'] = miglior_label
-            elif area < 100:
-                df.at[idx, 'GroundTruth_Label'] = 'Rumore'
+            else:
+                # NON è una cellula vera. Vediamo se è un pezzo di spazzatura sopra un bianco.
+                area_cpp_box = bw * bh
+                sovrapposto_al_bianco = False
+
+                for wbox in box_bianchi_medico:
+                    # Calcoliamo l'area di intersezione con il bianco del medico
+                    xA = max(cpp_box[0], wbox[0])
+                    yA = max(cpp_box[1], wbox[1])
+                    xB = min(cpp_box[2], wbox[2])
+                    yB = min(cpp_box[3], wbox[3])
+
+                    if xB > xA and yB > yA:
+                        area_intersezione = (xB - xA) * (yB - yA)
+                        # Se il 20% o più di questo box cade DENTRO un globulo bianco, è un frammento!
+                        if (area_intersezione / area_cpp_box) > 0.20:
+                            sovrapposto_al_bianco = True
+                            break
+
+                # --- VERDETTO FINALE ---
+                if sovrapposto_al_bianco:
+                    df.at[idx, 'GroundTruth_Label'] = 'Rumore'  # Continuiamo a uccidere il citoplasma
+                elif area < 20:
+                    # Abbassiamo drasticamente la soglia! Solo la VERA polvere microscopica (<20 px)
+                    # viene forzata a Rumore. Lasciamo respirare le piastrine dai 20 pixel in su!
+                    df.at[idx, 'GroundTruth_Label'] = 'Rumore'
 
     return df
 

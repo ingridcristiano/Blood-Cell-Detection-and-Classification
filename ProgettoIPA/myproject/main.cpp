@@ -231,17 +231,32 @@ int main() {
                 }
                 cv::morphologyEx(maskSoloBianchi, maskSoloBianchi, cv::MORPH_CLOSE, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
 
-                // --- PIASTRINE ---
-                cv::Mat imgGreen;
-                cv::extractChannel(imgOriginale, imgGreen, 1);
-                cv::Mat blackHat;
-                cv::Mat kernelBH = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(21, 21));
-                cv::morphologyEx(imgGreen, blackHat, cv::MORPH_BLACKHAT, kernelBH);
+                // --- PIASTRINE (APPROCCIO A COLORI REALI) ---
                 cv::Mat maskPiastrineRaw;
-                cv::threshold(blackHat, maskPiastrineRaw, 30, 255, cv::THRESH_BINARY);
 
-                cv::Mat areaDaEscludere;
-                cv::dilate(maskSoloBianchi, areaDaEscludere, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(35, 35)));
+                // H: 85-150 (Cerca SOLO la tinta Blu/Viola, ignora il rosso e il giallo)
+                // S: 30-255 (Deve essere abbastanza colorato, ignora il bianco/grigio di sfondo)
+                // V: 50-255 (Ignora il nero pece)
+                cv::inRange(imgHSVSub, cv::Scalar(85, 30, 50), cv::Scalar(150, 255, 255), maskPiastrineRaw);
+
+                // MAGIA: Uniamo le briciole vicine prima che connectedComponents le separi!
+                cv::Mat kernelClose = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(7, 7));
+                cv::morphologyEx(maskPiastrineRaw, maskPiastrineRaw, cv::MORPH_CLOSE, kernelClose);
+
+                // --- AREA DI ESCLUSIONE A BLOCCHI (Per proteggersi dal Globulo Bianco) ---
+                cv::Mat areaDaEscludere = cv::Mat::zeros(imgOriginale.size(), CV_8UC1);
+                std::vector<std::vector<cv::Point>> contoursBianchi;
+                cv::findContours(maskSoloBianchi, contoursBianchi, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+
+                for (const auto& contour : contoursBianchi) {
+                    cv::Rect wbcBox = cv::boundingRect(contour);
+                    wbcBox.x = std::max(0, wbcBox.x - 10);
+                    wbcBox.y = std::max(0, wbcBox.y - 10);
+                    wbcBox.width = std::min(imgOriginale.cols - wbcBox.x, wbcBox.width + 20);
+                    wbcBox.height = std::min(imgOriginale.rows - wbcBox.y, wbcBox.height + 20);
+                    cv::rectangle(areaDaEscludere, wbcBox, cv::Scalar(255), cv::FILLED);
+                }
+
                 cv::Mat maskSfondoLibero;
                 cv::bitwise_not(areaDaEscludere, maskSfondoLibero);
                 cv::bitwise_and(maskPiastrineRaw, maskSfondoLibero, maskPiastrineRaw);
@@ -249,9 +264,11 @@ int main() {
                 cv::Mat maskSoloPiastrine = cv::Mat::zeros(imgOriginale.size(), CV_8UC1);
                 cv::Mat labelsP, statsP, centroidsP;
                 int nLabelsP = cv::connectedComponentsWithStats(maskPiastrineRaw, labelsP, statsP, centroidsP);
+
                 for (int i = 1; i < nLabelsP; i++) {
                     int area = statsP.at<int>(i, cv::CC_STAT_AREA);
-                    if (area >= 15 && area <= 300) {
+                    // Accettiamo finalmente anche le piastrine giganti (fino a 1000 pixel)
+                    if (area >= 30 && area <= 800) {
                         maskSoloPiastrine.setTo(255, labelsP == i);
                     }
                 }

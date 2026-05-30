@@ -30,8 +30,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 if "csv" in BASE_DIR.lower() or "semi-supervised" in BASE_DIR.lower():
     BASE_DIR = os.path.abspath(os.path.join(BASE_DIR, ".."))
 
-TRAIN_CSV = os.path.join(BASE_DIR, "features_cellule_train.csv")
-TEST_CSV = os.path.join(BASE_DIR, "features_cellule_test.csv")
+TRAIN_CSV = os.path.join(BASE_DIR, 'csv', "features_cellule_train.csv")
+TEST_CSV = os.path.join(BASE_DIR, 'csv', "features_cellule_test.csv")
 
 OUTPUT_DIR = os.path.join(BASE_DIR, "risultati_multiclasse")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
