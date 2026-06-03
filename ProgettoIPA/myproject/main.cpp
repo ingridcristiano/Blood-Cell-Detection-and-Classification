@@ -16,7 +16,7 @@ void extractAndSaveFeatures(const cv::Mat& imgOriginale, const cv::Mat& mask,
     std::vector<std::vector<cv::Point>> contours;
     cv::findContours(mask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
-    // Conversione in HSV ed estrazione dei canali per intensità e saturazione (consigliato dal Prof)
+    // Conversione in HSV ed estrazione dei canali per intensità e saturazione 
     cv::Mat imgHSV;
     cv::cvtColor(imgOriginale, imgHSV, cv::COLOR_BGR2HSV);
 
@@ -137,7 +137,7 @@ int main() {
         // =========================================================================
       // std::string cartellaProgettoML = "C:/progetto_cellule/ProgettoML/csv/"; //giorgia
        //std::string cartellaProgettoML = "C:/Template-C-/ProgettoML/csv/";
-        std::string cartellaProgettoML = "./csv/"; // <-- CORRETTO: aggiunto punto e virgola
+        std::string cartellaProgettoML = "./csv/";
 
         // Creiamo la directory di output
         fs::create_directories(cartellaProgettoML);

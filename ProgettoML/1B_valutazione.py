@@ -183,6 +183,12 @@ if __name__ == "__main__":
                        label=f'{nome_classe} (AP = {ap:.2f})')
         plt.legend()
 
+        plt.xlabel('Recall')
+        plt.ylabel('Precision')
+        plt.title("Curve Precision-Recall")
+        plt.legend()
+        plt.tight_layout()
+        plt.show()  # <-- Questa è la riga vitale che mancava e che apre la finestra!
     # =========================================================================
     # 6. VISUALIZZATORE OPENCV
     # =========================================================================
