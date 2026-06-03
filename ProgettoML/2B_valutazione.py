@@ -135,9 +135,9 @@ if __name__ == "__main__":
     y_pred = df_test['Predicted_Label']
 
     accuratezza = accuracy_score(y_true, y_pred)
-    print(f"\n🎯 PERCENTUALE EFFICACIA GLOBALE (Con la spazzatura): {accuratezza * 100:.2f}%")
+    print(f"\n🎯 PERCENTUALE EFFICACIA: {accuratezza * 100:.2f}%")
 
-    print("\n📋 REPORT DIAGNOSTICO COMPLETO (Osserva il crollo della precisione!):")
+    print("\n📋 REPORT DIAGNOSTICO COMPLETO:")
     print(classification_report(y_true, y_pred, labels=tutte_le_classi, zero_division=0))
 
     # --- GRAFICO 1: MATRICE DI CONFUSIONE ---

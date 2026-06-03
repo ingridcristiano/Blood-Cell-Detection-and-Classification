@@ -234,12 +234,10 @@ int main() {
                 // --- PIASTRINE (APPROCCIO A COLORI REALI) ---
                 cv::Mat maskPiastrineRaw;
 
-                // H: 85-150 (Cerca SOLO la tinta Blu/Viola, ignora il rosso e il giallo)
-                // S: 30-255 (Deve essere abbastanza colorato, ignora il bianco/grigio di sfondo)
-                // V: 50-255 (Ignora il nero pece)
+              //HSV
                 cv::inRange(imgHSVSub, cv::Scalar(85, 30, 50), cv::Scalar(150, 255, 255), maskPiastrineRaw);
 
-                // MAGIA: Uniamo le briciole vicine prima che connectedComponents le separi!
+                // Uniamo le briciole vicine prima che connectedComponents le separi
                 cv::Mat kernelClose = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(7, 7));
                 cv::morphologyEx(maskPiastrineRaw, maskPiastrineRaw, cv::MORPH_CLOSE, kernelClose);
 
@@ -267,7 +265,7 @@ int main() {
 
                 for (int i = 1; i < nLabelsP; i++) {
                     int area = statsP.at<int>(i, cv::CC_STAT_AREA);
-                    // Accettiamo finalmente anche le piastrine giganti (fino a 1000 pixel)
+                 
                     if (area >= 30 && area <= 800) {
                         maskSoloPiastrine.setTo(255, labelsP == i);
                     }
@@ -333,7 +331,7 @@ int main() {
                     }
                 }
 
-                // --- ESTRAZIONE FINALE COINVOLGENDO LE NUOVE FEATURE ---
+                // --- ESTRAZIONE FINALE  ---
                 extractAndSaveFeatures(imgOriginale, maskSoloBianchi, "GlobuloBianco", fileName, csvFile, imgAnteprima, 1500.0);
                 extractAndSaveFeatures(imgOriginale, maskSoloPiastrine, "Piastrina", fileName, csvFile, imgAnteprima);
 

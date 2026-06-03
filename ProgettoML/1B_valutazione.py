@@ -182,13 +182,10 @@ if __name__ == "__main__":
             ax_pr.plot(recall, precision, lw=2, color=colori_pr.get(nome_classe, 'black'),
                        label=f'{nome_classe} (AP = {ap:.2f})')
         plt.legend()
-
         plt.xlabel('Recall')
         plt.ylabel('Precision')
         plt.title("Curve Precision-Recall")
-        plt.legend()
-        plt.tight_layout()
-        plt.show()  # <-- Questa è la riga vitale che mancava e che apre la finestra!
+        plt.show()
     # =========================================================================
     # 6. VISUALIZZATORE OPENCV
     # =========================================================================
