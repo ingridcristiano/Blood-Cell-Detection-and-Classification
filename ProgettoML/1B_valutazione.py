@@ -60,7 +60,7 @@ def compute_iou(boxA, boxB):
 
 
 def valida_dataset_test():
-    print("1. Lettura dei file JSON del medico per l'esame finale...")
+    print("1. Lettura dei file JSON del medico per l'esame finale (Anti-Doppioni)...")
 
     percorso_csv = os.path.join(BASE_DIR, 'features_cellule_test.csv')
     if not os.path.exists(percorso_csv):
@@ -74,6 +74,8 @@ def valida_dataset_test():
 
     df = pd.read_csv(percorso_csv)
     df.columns = df.columns.str.strip()
+
+    # Manteniamo la logica originaria di inizializzare a NaN per nascondere il rumore
     df['GroundTruth_Label'] = pd.Series(np.nan, dtype="object")
 
     for img_name in df['ImageName'].unique():
@@ -84,30 +86,43 @@ def valida_dataset_test():
         with open(file_trovati[0], 'r') as f:
             dati_ann = json.load(f)
 
-        for idx in df[df['ImageName'] == img_name].index:
-            cpp_box = [df.at[idx, 'BoxX'], df.at[idx, 'BoxY'], df.at[idx, 'BoxX'] + df.at[idx, 'BoxW'],
-                       df.at[idx, 'BoxY'] + df.at[idx, 'BoxH']]
-            miglior_iou, miglior_label = 0.0, None
-            for obj in dati_ann.get('objects', []):
-                pts = obj['points']['exterior']
-                cls = obj['classTitle'].strip().upper()
-                if cls == 'WBC':
-                    cls_name = 'GlobuloBianco'
-                elif cls == 'RBC':
-                    cls_name = 'GlobuloRosso'
-                elif cls in ['PLATELETS', 'PLATELET']:
-                    cls_name = 'Piastrina'
-                else:
-                    cls_name = cls
+        indici_immagine = df[df['ImageName'] == img_name].index
 
-                iou = compute_iou(cpp_box, [pts[0][0], pts[0][1], pts[1][0], pts[1][1]])
-                if iou > miglior_iou:
+        box_cpp_dict = {
+            idx: [df.at[idx, 'BoxX'], df.at[idx, 'BoxY'], df.at[idx, 'BoxX'] + df.at[idx, 'BoxW'],
+                  df.at[idx, 'BoxY'] + df.at[idx, 'BoxH']]
+            for idx in indici_immagine
+        }
+
+        # Per ogni Ground Truth, cerchiamo un solo box C++ (il migliore)
+        for obj in dati_ann.get('objects', []):
+            pts = obj['points']['exterior']
+            gt_box = [pts[0][0], pts[0][1], pts[1][0], pts[1][1]]
+
+            cls = obj['classTitle'].strip().upper()
+            if cls == 'WBC':
+                cls_name = 'GlobuloBianco'
+            elif cls == 'RBC':
+                cls_name = 'GlobuloRosso'
+            elif cls in ['PLATELETS', 'PLATELET']:
+                cls_name = 'Piastrina'
+            else:
+                cls_name = cls
+
+            soglia = 0.1 if cls_name == 'Piastrina' else 0.35
+
+            miglior_iou = 0.0
+            miglior_idx = None
+
+            for idx, cpp_box in box_cpp_dict.items():
+                iou = compute_iou(cpp_box, gt_box)
+                if iou >= soglia and iou > miglior_iou:
                     miglior_iou = iou
-                    miglior_label = cls_name
+                    miglior_idx = idx
 
-            soglia = 0.1 if miglior_label == 'Piastrina' else 0.35
-            if miglior_iou >= soglia:
-                df.at[idx, 'GroundTruth_Label'] = miglior_label
+            # Assegniamo l'etichetta unicamente al rettangolo vincitore
+            if miglior_idx is not None:
+                df.at[miglior_idx, 'GroundTruth_Label'] = cls_name
 
     return df
 
@@ -153,6 +168,23 @@ if __name__ == "__main__":
         print("\n📋 REPORT DIAGNOSTICO DETTAGLIATO:")
         print(classification_report(y_true, y_pred, labels=classi_mediche, zero_division=0))
 
+        classi_str = [mappa_inversa[c] for c in rf.classes_]
+        y_true_bin = label_binarize(y_true, classes=classi_str)
+
+        # --- CALCOLO AVERAGE PRECISION (AP) ---
+        print("\n📊 CALCOLO AVERAGE PRECISION (AP) PER CLASSE (Senza doppioni):")
+        ap_scores = {}
+        for i, nome_classe in enumerate(classi_str):
+            if nome_classe == 'Rumore':
+                continue
+            ap = average_precision_score(y_true_bin[:, i], y_proba[:, i])
+            ap_scores[nome_classe] = ap
+            print(f"   - AP {nome_classe.ljust(15)}: {ap:.4f}")
+
+        if ap_scores:
+            map_score = sum(ap_scores.values()) / len(ap_scores)
+            print(f"   > mAP Globale        : {map_score:.4f}")
+
         # --- GRAFICO 1: MATRICE DI CONFUSIONE (RUMORE COMPLETAMENTE NASCOSTO) ---
         print("\n4. Generazione Matrice di Confusione (chiudi la finestra per procedere)...")
         cm = confusion_matrix(y_true, y_pred, labels=classi_mediche)
@@ -165,9 +197,6 @@ if __name__ == "__main__":
         plt.show()
 
         # --- GRAFICO 2: PRECISION-RECALL CURVE ---
-        classi_str = [mappa_inversa[c] for c in rf.classes_]
-        y_true_bin = label_binarize(y_true, classes=classi_str)
-
         colori_pr = {'GlobuloRosso': 'red', 'GlobuloBianco': 'blue', 'Piastrina': 'orange'}
 
         fig_pr, ax_pr = plt.subplots(figsize=(8, 6))
@@ -177,7 +206,7 @@ if __name__ == "__main__":
                 continue
 
             precision, recall, _ = precision_recall_curve(y_true_bin[:, i], y_proba[:, i])
-            ap = average_precision_score(y_true_bin[:, i], y_proba[:, i])
+            ap = ap_scores[nome_classe]  # Usa il valore calcolato in precedenza
 
             ax_pr.plot(recall, precision, lw=2, color=colori_pr.get(nome_classe, 'black'),
                        label=f'{nome_classe} (AP = {ap:.2f})')

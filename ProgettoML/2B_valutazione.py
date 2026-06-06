@@ -61,7 +61,7 @@ def compute_iou(boxA, boxB):
 
 
 def valida_dataset_test_completo():
-    print("1. Lettura dei file JSON e assegnazione del Rumore...")
+    print("1. Lettura dei file JSON e assegnazione univoca (Anti-Doppioni)...")
 
     percorso_csv = os.path.join(BASE_DIR, 'features_cellule_test.csv')
     if not os.path.exists(percorso_csv):
@@ -71,7 +71,9 @@ def valida_dataset_test_completo():
 
     df = pd.read_csv(percorso_csv)
     df.columns = df.columns.str.strip()
-    df['GroundTruth_Label'] = pd.Series(np.nan, dtype="object")
+
+    # Inizializziamo TUTTO a Rumore di default
+    df['GroundTruth_Label'] = 'Rumore'
 
     for img_name in df['ImageName'].unique():
         nome_base = os.path.splitext(img_name)[0]
@@ -81,34 +83,49 @@ def valida_dataset_test_completo():
         with open(file_trovati[0], 'r') as f:
             dati_ann = json.load(f)
 
-        for idx in df[df['ImageName'] == img_name].index:
-            cpp_box = [df.at[idx, 'BoxX'], df.at[idx, 'BoxY'], df.at[idx, 'BoxX'] + df.at[idx, 'BoxW'],
-                       df.at[idx, 'BoxY'] + df.at[idx, 'BoxH']]
-            miglior_iou, miglior_label = 0.0, None
-            for obj in dati_ann.get('objects', []):
-                pts = obj['points']['exterior']
-                cls = obj['classTitle'].strip().upper()
-                if cls == 'WBC':
-                    cls_name = 'GlobuloBianco'
-                elif cls == 'RBC':
-                    cls_name = 'GlobuloRosso'
-                elif cls in ['PLATELETS', 'PLATELET']:
-                    cls_name = 'Piastrina'
-                else:
-                    cls_name = cls
+        # Indici di tutti i box C++ trovati in questa specifica immagine
+        indici_immagine = df[df['ImageName'] == img_name].index
 
-                iou = compute_iou(cpp_box, [pts[0][0], pts[0][1], pts[1][0], pts[1][1]])
-                if iou > miglior_iou:
-                    miglior_iou = iou
-                    miglior_label = cls_name
+        # Dizionario di appoggio per evitare di ricalcolare i box in continuazione
+        box_cpp_dict = {
+            idx: [df.at[idx, 'BoxX'], df.at[idx, 'BoxY'], df.at[idx, 'BoxX'] + df.at[idx, 'BoxW'],
+                  df.at[idx, 'BoxY'] + df.at[idx, 'BoxH']]
+            for idx in indici_immagine
+        }
 
-            soglia = 0.1 if miglior_label == 'Piastrina' else 0.35
+        # Cicliamo sulle Ground Truth (le cellule VERE annotate dal medico)
+        for obj in dati_ann.get('objects', []):
+            pts = obj['points']['exterior']
+            gt_box = [pts[0][0], pts[0][1], pts[1][0], pts[1][1]]
 
-            # STESSA REGOLA SPIETATA DEL TRAIN:
-            if miglior_iou >= soglia:
-                df.at[idx, 'GroundTruth_Label'] = miglior_label
+            cls = obj['classTitle'].strip().upper()
+            if cls == 'WBC':
+                cls_name = 'GlobuloBianco'
+            elif cls == 'RBC':
+                cls_name = 'GlobuloRosso'
+            elif cls in ['PLATELETS', 'PLATELET']:
+                cls_name = 'Piastrina'
             else:
-                df.at[idx, 'GroundTruth_Label'] = 'Rumore'
+                cls_name = cls
+
+            soglia = 0.1 if cls_name == 'Piastrina' else 0.35
+
+            miglior_iou = 0.0
+            miglior_idx = None
+
+            # Cerchiamo il SINGOLO rettangolo C++ che copre meglio questa specifica Ground Truth
+            for idx, cpp_box in box_cpp_dict.items():
+                iou = compute_iou(cpp_box, gt_box)
+
+                # Se supera la soglia ed è il migliore visto finora per QUESTA cellula
+                if iou >= soglia and iou > miglior_iou:
+                    miglior_iou = iou
+                    miglior_idx = idx
+
+            # Se abbiamo trovato un rettangolo idoneo, gli assegniamo l'etichetta.
+            # Qualsiasi altro rettangolo sovrapposto non vince e rimarrà 'Rumore'.
+            if miglior_idx is not None:
+                df.at[miglior_idx, 'GroundTruth_Label'] = cls_name
 
     return df
 
@@ -135,10 +152,23 @@ if __name__ == "__main__":
     y_pred = df_test['Predicted_Label']
 
     accuratezza = accuracy_score(y_true, y_pred)
-    print(f"\n🎯 PERCENTUALE EFFICACIA: {accuratezza * 100:.2f}%")
+    print(f"\n🎯 PERCENTUALE EFFICACIA GLOBALE: {accuratezza * 100:.2f}%")
 
     print("\n📋 REPORT DIAGNOSTICO COMPLETO:")
     print(classification_report(y_true, y_pred, labels=tutte_le_classi, zero_division=0))
+
+    # --- CALCOLO AVERAGE PRECISION (AP) ---
+    print("\n📊 CALCOLO AVERAGE PRECISION (AP) PER CLASSE (Senza doppioni):")
+    y_true_bin = label_binarize(y_true, classes=tutte_le_classi)
+    ap_scores = {}
+    for i, nome_classe in enumerate(tutte_le_classi):
+        ap = average_precision_score(y_true_bin[:, i], y_proba[:, i])
+        ap_scores[nome_classe] = ap
+        print(f"   - AP {nome_classe.ljust(15)}: {ap:.4f}")
+
+    # Mean Average Precision (mAP)
+    map_score = sum(ap_scores.values()) / len(ap_scores)
+    print(f"   > mAP Globale        : {map_score:.4f}")
 
     # --- GRAFICO 1: MATRICE DI CONFUSIONE ---
     print("\n4. Generazione Matrice di Confusione (chiudi la finestra per procedere)...")
@@ -152,17 +182,17 @@ if __name__ == "__main__":
     plt.show()
 
     # --- GRAFICO 2: PRECISION-RECALL CURVE ---
-    y_true_bin = label_binarize(y_true, classes=tutte_le_classi)
+    print("5. Generazione Curve Precision-Recall...")
     colori_pr = {'GlobuloRosso': 'red', 'GlobuloBianco': 'blue', 'Piastrina': 'orange', 'Rumore': 'gray'}
 
     fig_pr, ax_pr = plt.subplots(figsize=(8, 6))
     for i, nome_classe in enumerate(tutte_le_classi):
         precision, recall, _ = precision_recall_curve(y_true_bin[:, i], y_proba[:, i])
-        ap = average_precision_score(y_true_bin[:, i], y_proba[:, i])
+        ap = ap_scores[nome_classe]
         ax_pr.plot(recall, precision, lw=2, color=colori_pr.get(nome_classe, 'black'),
-                   label=f'{nome_classe} (AP = {ap:.2f})')
+                   label=f'{nome_classe} (AP = {ap:.4f})')
     plt.legend()
-    plt.title("Curve Precision-Recall")
+    plt.title("Curve Precision-Recall (Metriche Anti-Doppioni)")
     plt.show()
 
     # =========================================================================
