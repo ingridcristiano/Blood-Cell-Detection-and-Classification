@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import label_binarize
 from sklearn.metrics import classification_report, accuracy_score, confusion_matrix, ConfusionMatrixDisplay, \
     precision_recall_curve, average_precision_score
-from xgboost import XGBClassifier  # Aggiunto per permettere a joblib di leggere il modello
+from xgboost import XGBClassifier
 
 warnings.filterwarnings('ignore', category=UserWarning)
 
@@ -20,7 +20,6 @@ warnings.filterwarnings('ignore', category=UserWarning)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 MODELS_DIR = os.path.join(BASE_DIR, "modelli_salvati")
-# Assicurati di puntare alla cartella giusta se il modello XGBoost è salvato nella BASE_DIR
 if not os.path.exists(os.path.join(MODELS_DIR, 'xgboost_model.pkl')):
     MODELS_DIR = BASE_DIR
 
@@ -31,7 +30,6 @@ FEATURES = [
     'Hu1', 'Hu2', 'Hu3', 'Hu4', 'Hu5', 'Hu6', 'Hu7'
 ]
 
-# Tutte e 4 le classi incluse
 mappa_inversa = {0: 'GlobuloBianco', 1: 'GlobuloRosso', 2: 'Piastrina', 3: 'Rumore'}
 tutte_le_classi = ['GlobuloBianco', 'GlobuloRosso', 'Piastrina', 'Rumore']
 
@@ -74,8 +72,8 @@ def valida_dataset_test_completo():
     df = pd.read_csv(percorso_csv)
     df.columns = df.columns.str.strip()
 
-    # Inizializziamo TUTTO a Rumore di default
-    df['GroundTruth_Label'] = 'Rumore'
+    # Inizializziamo a NaN per nascondere il "finto" rumore non annotato
+    df['GroundTruth_Label'] = pd.Series(np.nan, dtype="object")
 
     for img_name in df['ImageName'].unique():
         nome_base = os.path.splitext(img_name)[0]
@@ -85,17 +83,15 @@ def valida_dataset_test_completo():
         with open(file_trovati[0], 'r') as f:
             dati_ann = json.load(f)
 
-        # Indici di tutti i box C++ trovati in questa specifica immagine
         indici_immagine = df[df['ImageName'] == img_name].index
 
-        # Dizionario di appoggio per evitare di ricalcolare i box in continuazione
         box_cpp_dict = {
             idx: [df.at[idx, 'BoxX'], df.at[idx, 'BoxY'], df.at[idx, 'BoxX'] + df.at[idx, 'BoxW'],
                   df.at[idx, 'BoxY'] + df.at[idx, 'BoxH']]
             for idx in indici_immagine
         }
 
-        # Cicliamo sulle Ground Truth (le cellule VERE annotate dal medico)
+        # Anti-Doppioni basato su Ground Truth
         for obj in dati_ann.get('objects', []):
             pts = obj['points']['exterior']
             gt_box = [pts[0][0], pts[0][1], pts[1][0], pts[1][1]]
@@ -115,17 +111,14 @@ def valida_dataset_test_completo():
             miglior_iou = 0.0
             miglior_idx = None
 
-            # Cerchiamo il SINGOLO rettangolo C++ che copre meglio questa specifica Ground Truth
             for idx, cpp_box in box_cpp_dict.items():
                 iou = compute_iou(cpp_box, gt_box)
 
-                # Se supera la soglia ed è il migliore visto finora per QUESTA cellula
                 if iou >= soglia and iou > miglior_iou:
                     miglior_iou = iou
                     miglior_idx = idx
 
-            # Se abbiamo trovato un rettangolo idoneo, gli assegniamo l'etichetta.
-            # Qualsiasi altro rettangolo sovrapposto non vince e rimarrà 'Rumore'.
+            # Promuove solo il rettangolo vincente
             if miglior_idx is not None:
                 df.at[miglior_idx, 'GroundTruth_Label'] = cls_name
 
@@ -138,72 +131,89 @@ def valida_dataset_test_completo():
 if __name__ == "__main__":
     df_test = valida_dataset_test_completo()
 
-    print("2. Caricamento del cervello IA (.pkl)...")
+    print("2. Caricamento del cervello IA XGBoost (.pkl)...")
     imputer = joblib.load(os.path.join(MODELS_DIR, 'imputer_progetto.pkl'))
     scaler = joblib.load(os.path.join(MODELS_DIR, 'scaler_progetto.pkl'))
-    # CARICAMENTO DEL MODELLO XGBOOST
     xgb_model = joblib.load(os.path.join(MODELS_DIR, 'xgboost_model.pkl'))
 
     print("3. Esecuzione predizioni...")
     cols_to_use = [col for col in FEATURES if col in df_test.columns]
     X_test_scaled = scaler.transform(imputer.transform(df_test[cols_to_use].values))
 
-    # PREDIZIONI TRAMITE XGBOOST
+    # Predizione secca per OpenCV
     df_test['Predicted_Label'] = [mappa_inversa[val] for val in xgb_model.predict(X_test_scaled)]
-    y_proba = xgb_model.predict_proba(X_test_scaled)
 
-    y_true = df_test['GroundTruth_Label']
-    y_pred = df_test['Predicted_Label']
+    # MASCHERA: Valutiamo le metriche solo sulle cellule etichettate!
+    mask_valutazione = df_test['GroundTruth_Label'].notna()
+    df_valutazione = df_test[mask_valutazione]
+    y_true = df_valutazione['GroundTruth_Label']
+    y_pred = df_valutazione['Predicted_Label']
 
-    accuratezza = accuracy_score(y_true, y_pred)
-    print(f"\n🎯 PERCENTUALE EFFICACIA GLOBALE: {accuratezza * 100:.2f}%")
+    X_valutazione_scaled = X_test_scaled[mask_valutazione]
+    y_proba = xgb_model.predict_proba(X_valutazione_scaled)
 
-    print("\n📋 REPORT DIAGNOSTICO COMPLETO:")
-    print(classification_report(y_true, y_pred, labels=tutte_le_classi, zero_division=0))
+    if len(y_true) > 0:
+        accuratezza = accuracy_score(y_true, y_pred)
+        print(f"\n🎯 PERCENTUALE EFFICACIA SULLE CELLULE REALI: {accuratezza * 100:.2f}%")
 
-    # --- CALCOLO AVERAGE PRECISION (AP) ---
-    print("\n📊 CALCOLO AVERAGE PRECISION (AP) PER CLASSE (Senza doppioni):")
-    y_true_bin = label_binarize(y_true, classes=tutte_le_classi)
-    ap_scores = {}
-    for i, nome_classe in enumerate(tutte_le_classi):
-        ap = average_precision_score(y_true_bin[:, i], y_proba[:, i])
-        ap_scores[nome_classe] = ap
-        print(f"   - AP {nome_classe.ljust(15)}: {ap:.4f}")
+        # Report filtrato senza Rumore
+        classi_mediche = ['GlobuloBianco', 'GlobuloRosso', 'Piastrina']
+        print("\n📋 REPORT DIAGNOSTICO DETTAGLIATO:")
+        print(classification_report(y_true, y_pred, labels=classi_mediche, zero_division=0))
 
-    # Mean Average Precision (mAP)
-    map_score = sum(ap_scores.values()) / len(ap_scores)
-    print(f"   > mAP Globale        : {map_score:.4f}")
+        # Recupera l'ordine corretto delle classi dal modello per la binarizzazione
+        classi_str = [mappa_inversa[c] for c in xgb_model.classes_]
+        y_true_bin = label_binarize(y_true, classes=classi_str)
 
-    # --- GRAFICO 1: MATRICE DI CONFUSIONE ---
-    print("\n4. Generazione Matrice di Confusione (chiudi la finestra per procedere)...")
-    cm = confusion_matrix(y_true, y_pred, labels=tutte_le_classi)
-    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=tutte_le_classi)
+        # --- CALCOLO AVERAGE PRECISION (AP) ---
+        print("\n📊 CALCOLO AVERAGE PRECISION (AP) PER CLASSE MEDICA:")
+        ap_scores = {}
+        for i, nome_classe in enumerate(classi_str):
+            if nome_classe == 'Rumore':
+                continue
+            ap = average_precision_score(y_true_bin[:, i], y_proba[:, i])
+            ap_scores[nome_classe] = ap
+            print(f"   - AP {nome_classe.ljust(15)}: {ap:.4f}")
 
-    fig, ax = plt.subplots(figsize=(8, 6))
-    disp.plot(ax=ax, cmap='Blues', xticks_rotation=45)
-    plt.title(f"Matrice di Confusione - Accuratezza: {accuratezza * 100:.2f}%")
-    plt.tight_layout()
-    plt.show()
+        if ap_scores:
+            map_score = sum(ap_scores.values()) / len(ap_scores)
+            print(f"   > mAP (Solo Cellule): {map_score:.4f}")
 
-    # --- GRAFICO 2: PRECISION-RECALL CURVE ---
-    print("5. Generazione Curve Precision-Recall...")
-    colori_pr = {'GlobuloRosso': 'red', 'GlobuloBianco': 'blue', 'Piastrina': 'orange', 'Rumore': 'gray'}
+        # --- GRAFICO 1: MATRICE DI CONFUSIONE PULITA ---
+        print("\n4. Generazione Matrice di Confusione (chiudi la finestra per procedere)...")
+        cm = confusion_matrix(y_true, y_pred, labels=classi_mediche)
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=classi_mediche)
 
-    fig_pr, ax_pr = plt.subplots(figsize=(8, 6))
-    for i, nome_classe in enumerate(tutte_le_classi):
-        precision, recall, _ = precision_recall_curve(y_true_bin[:, i], y_proba[:, i])
-        ap = ap_scores[nome_classe]
-        ax_pr.plot(recall, precision, lw=2, color=colori_pr.get(nome_classe, 'black'),
-                   label=f'{nome_classe} (AP = {ap:.4f})')
-    plt.legend()
-    plt.title("Curve Precision-Recall (Metriche Anti-Doppioni)")
-    plt.show()
+        fig, ax = plt.subplots(figsize=(8, 6))
+        disp.plot(ax=ax, cmap='Blues', xticks_rotation=45)
+        plt.title(f"Matrice di Confusione Cellulare - Acc: {accuratezza * 100:.2f}%")
+        plt.tight_layout()
+        plt.show()
+
+        # --- GRAFICO 2: PRECISION-RECALL CURVE PULITO ---
+        print("5. Generazione Curve Precision-Recall...")
+        colori_pr = {'GlobuloRosso': 'red', 'GlobuloBianco': 'blue', 'Piastrina': 'orange'}
+
+        fig_pr, ax_pr = plt.subplots(figsize=(8, 6))
+        for i, nome_classe in enumerate(classi_str):
+            if nome_classe == 'Rumore':
+                continue
+
+            precision, recall, _ = precision_recall_curve(y_true_bin[:, i], y_proba[:, i])
+            ap = ap_scores[nome_classe]
+            ax_pr.plot(recall, precision, lw=2, color=colori_pr.get(nome_classe, 'black'),
+                       label=f'{nome_classe} (AP = {ap:.4f})')
+        plt.legend()
+        plt.xlabel('Recall')
+        plt.ylabel('Precision')
+        plt.title("Curve Precision-Recall (Solo Cellule Mediche)")
+        plt.show()
 
     # =========================================================================
     # 6. VISUALIZZATORE OPENCV
     # =========================================================================
     immagini_da_mostrare = df_test['ImageName'].unique()
-    print(f"\n6. AVVIO VISUALIZZATORE OPENCV...")
+    print(f"\n6. AVVIO VISUALIZZATORE OPENCV (Trovate {len(immagini_da_mostrare)} immagini)...")
 
     TEST_IMG_DIR = os.path.join(BASE_DIR, "archive", "test", "img")
     TEST_ANN_DIR = os.path.join(BASE_DIR, "archive", "test", "ann")
@@ -246,19 +256,17 @@ if __name__ == "__main__":
 
         for _, row in img_data.iterrows():
             bx, by, bw, bh = int(row['BoxX']), int(row['BoxY']), int(row['BoxW']), int(row['BoxH'])
-            vera_label = row['GroundTruth_Label']
+            vera_label = row.get('GroundTruth_Label', np.nan)
             pred_label = row['Predicted_Label']
 
-            colore_ia = colori_classi.get(pred_label, (255, 255, 255))
-
-            # Disegniamo anche il rumore per farti vedere il disastro generato dalle annotazioni parziali
             if pred_label == 'Rumore':
-                spessore_box = 1
-            else:
-                spessore_box = 2 if pred_label == vera_label else 1
+                continue
+
+            colore_ia = colori_classi.get(pred_label, (255, 255, 255))
+            spessore_box = 2 if pred_label == vera_label else 1
 
             testo_pred = testi_brevi.get(pred_label, pred_label)
-            testo_vero = testi_brevi.get(vera_label, vera_label)
+            testo_vero = "NA" if pd.isna(vera_label) else testi_brevi.get(vera_label, vera_label)
 
             testo_finale = f"IA:{testo_pred} | V:{testo_vero}"
 
