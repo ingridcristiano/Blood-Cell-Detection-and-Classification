@@ -15,7 +15,7 @@ CARTELLA_CSV = os.path.join(BASE_DIR, 'csv')
 CARTELLA_JSON = os.path.join(BASE_DIR, 'archive', 'train', 'ann')
 
 FEATURES = [
-    'Area', 'Perimeter', 'Circularity', 'AspectRatio',
+    'Area', 'Perimeter', 'Circularity', 'AspectRatio', 'Eccentricity', 'Extent',
     'MeanBlue', 'MeanGreen', 'MeanRed', 'MeanValue', 'MinValue', 'MaxValue',
     'MeanSaturation', 'MinSat', 'MaxSat', 'TextureValue', 'TextureSat', 'TextureLaplacian',
     'Hu1', 'Hu2', 'Hu3', 'Hu4', 'Hu5', 'Hu6', 'Hu7'

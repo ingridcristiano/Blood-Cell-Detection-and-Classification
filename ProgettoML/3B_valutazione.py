@@ -24,7 +24,7 @@ if not os.path.exists(os.path.join(MODELS_DIR, 'xgboost_model.pkl')):
     MODELS_DIR = BASE_DIR
 
 FEATURES = [
-    'Area', 'Perimeter', 'Circularity', 'AspectRatio',
+    'Area', 'Perimeter', 'Circularity', 'AspectRatio', 'Eccentricity', 'Extent',
     'MeanBlue', 'MeanGreen', 'MeanRed', 'MeanValue', 'MinValue', 'MaxValue',
     'MeanSaturation', 'MinSat', 'MaxSat', 'TextureValue', 'TextureSat', 'TextureLaplacian',
     'Hu1', 'Hu2', 'Hu3', 'Hu4', 'Hu5', 'Hu6', 'Hu7'
@@ -72,7 +72,7 @@ def valida_dataset_test_completo():
     df = pd.read_csv(percorso_csv)
     df.columns = df.columns.str.strip()
 
-    # Inizializziamo a NaN per nascondere il "finto" rumore non annotato
+    # --- LOGICA APPLICATA: Inizializziamo a NaN per nascondere il rumore non annotato ---
     df['GroundTruth_Label'] = pd.Series(np.nan, dtype="object")
 
     for img_name in df['ImageName'].unique():
@@ -83,15 +83,17 @@ def valida_dataset_test_completo():
         with open(file_trovati[0], 'r') as f:
             dati_ann = json.load(f)
 
+        # Indici di tutti i box C++ trovati in questa specifica immagine
         indici_immagine = df[df['ImageName'] == img_name].index
 
+        # Dizionario di appoggio per evitare di ricalcolare i box in continuazione
         box_cpp_dict = {
             idx: [df.at[idx, 'BoxX'], df.at[idx, 'BoxY'], df.at[idx, 'BoxX'] + df.at[idx, 'BoxW'],
                   df.at[idx, 'BoxY'] + df.at[idx, 'BoxH']]
             for idx in indici_immagine
         }
 
-        # Anti-Doppioni basato su Ground Truth
+        # Cicliamo sulle Ground Truth (le cellule VERE annotate dal medico)
         for obj in dati_ann.get('objects', []):
             pts = obj['points']['exterior']
             gt_box = [pts[0][0], pts[0][1], pts[1][0], pts[1][1]]
@@ -111,9 +113,11 @@ def valida_dataset_test_completo():
             miglior_iou = 0.0
             miglior_idx = None
 
+            # Cerchiamo il SINGOLO rettangolo C++ che copre meglio questa specifica Ground Truth
             for idx, cpp_box in box_cpp_dict.items():
                 iou = compute_iou(cpp_box, gt_box)
 
+                # Se supera la soglia ed è il migliore visto finora per QUESTA cellula
                 if iou >= soglia and iou > miglior_iou:
                     miglior_iou = iou
                     miglior_idx = idx
@@ -131,26 +135,26 @@ def valida_dataset_test_completo():
 if __name__ == "__main__":
     df_test = valida_dataset_test_completo()
 
-    print("2. Caricamento del cervello IA XGBoost (.pkl)...")
+    print("2. Caricamento del cervello IA (.pkl)...")
     imputer = joblib.load(os.path.join(MODELS_DIR, 'imputer_progetto.pkl'))
     scaler = joblib.load(os.path.join(MODELS_DIR, 'scaler_progetto.pkl'))
-    xgb_model = joblib.load(os.path.join(MODELS_DIR, 'xgboost_model.pkl'))
+    rf = joblib.load(os.path.join(MODELS_DIR, 'random_forest.pkl'))
 
     print("3. Esecuzione predizioni...")
     cols_to_use = [col for col in FEATURES if col in df_test.columns]
     X_test_scaled = scaler.transform(imputer.transform(df_test[cols_to_use].values))
 
-    # Predizione secca per OpenCV
-    df_test['Predicted_Label'] = [mappa_inversa[val] for val in xgb_model.predict(X_test_scaled)]
+    # Predizione secca
+    df_test['Predicted_Label'] = [mappa_inversa[val] for val in rf.predict(X_test_scaled)]
 
-    # MASCHERA: Valutiamo le metriche solo sulle cellule etichettate!
+    # --- LOGICA APPLICATA: MASCHERA per valutare solo le cellule etichettate! ---
     mask_valutazione = df_test['GroundTruth_Label'].notna()
     df_valutazione = df_test[mask_valutazione]
     y_true = df_valutazione['GroundTruth_Label']
     y_pred = df_valutazione['Predicted_Label']
 
     X_valutazione_scaled = X_test_scaled[mask_valutazione]
-    y_proba = xgb_model.predict_proba(X_valutazione_scaled)
+    y_proba = rf.predict_proba(X_valutazione_scaled)
 
     if len(y_true) > 0:
         accuratezza = accuracy_score(y_true, y_pred)
@@ -161,8 +165,8 @@ if __name__ == "__main__":
         print("\n📋 REPORT DIAGNOSTICO DETTAGLIATO:")
         print(classification_report(y_true, y_pred, labels=classi_mediche, zero_division=0))
 
-        # Recupera l'ordine corretto delle classi dal modello per la binarizzazione
-        classi_str = [mappa_inversa[c] for c in xgb_model.classes_]
+        # Recupera l'ordine corretto per la binarizzazione
+        classi_str = [mappa_inversa[c] for c in rf.classes_]
         y_true_bin = label_binarize(y_true, classes=classi_str)
 
         # --- CALCOLO AVERAGE PRECISION (AP) ---
@@ -198,7 +202,6 @@ if __name__ == "__main__":
         for i, nome_classe in enumerate(classi_str):
             if nome_classe == 'Rumore':
                 continue
-
             precision, recall, _ = precision_recall_curve(y_true_bin[:, i], y_proba[:, i])
             ap = ap_scores[nome_classe]
             ax_pr.plot(recall, precision, lw=2, color=colori_pr.get(nome_classe, 'black'),
@@ -213,7 +216,7 @@ if __name__ == "__main__":
     # 6. VISUALIZZATORE OPENCV
     # =========================================================================
     immagini_da_mostrare = df_test['ImageName'].unique()
-    print(f"\n6. AVVIO VISUALIZZATORE OPENCV (Trovate {len(immagini_da_mostrare)} immagini)...")
+    print(f"\n6. AVVIO VISUALIZZATORE OPENCV...")
 
     TEST_IMG_DIR = os.path.join(BASE_DIR, "archive", "test", "img")
     TEST_ANN_DIR = os.path.join(BASE_DIR, "archive", "test", "ann")
@@ -259,6 +262,7 @@ if __name__ == "__main__":
             vera_label = row.get('GroundTruth_Label', np.nan)
             pred_label = row['Predicted_Label']
 
+            # --- LOGICA APPLICATA: Saltiamo la visualizzazione del rumore predetto ---
             if pred_label == 'Rumore':
                 continue
 

@@ -24,7 +24,7 @@ if not os.path.exists(os.path.join(MODELS_DIR, 'random_forest.pkl')):
     MODELS_DIR = BASE_DIR
 
 FEATURES = [
-    'Area', 'Perimeter', 'Circularity', 'AspectRatio',
+    'Area', 'Perimeter', 'Circularity', 'AspectRatio', 'Eccentricity', 'Extent',
     'MeanBlue', 'MeanGreen', 'MeanRed', 'MeanValue', 'MinValue', 'MaxValue',
     'MeanSaturation', 'MinSat', 'MaxSat', 'TextureValue', 'TextureSat', 'TextureLaplacian',
     'Hu1', 'Hu2', 'Hu3', 'Hu4', 'Hu5', 'Hu6', 'Hu7'
