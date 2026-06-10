@@ -74,6 +74,7 @@ def valida_dataset_test_completo():
 
     # Inizializziamo TUTTO a Rumore di default
     df['GroundTruth_Label'] = 'Rumore'
+    df['IoU_Reale'] = 0.0  # <--- INSERITO: Fondamentale per il calcolo mAP!
 
     for img_name in df['ImageName'].unique():
         nome_base = os.path.splitext(img_name)[0]
@@ -123,9 +124,9 @@ def valida_dataset_test_completo():
                     miglior_idx = idx
 
             # Se abbiamo trovato un rettangolo idoneo, gli assegniamo l'etichetta.
-            # Qualsiasi altro rettangolo sovrapposto non vince e rimarrà 'Rumore'.
             if miglior_idx is not None:
                 df.at[miglior_idx, 'GroundTruth_Label'] = cls_name
+                df.at[miglior_idx, 'IoU_Reale'] = miglior_iou  # <--- INSERITO: Salvataggio per il prof
 
     return df
 
@@ -157,25 +158,36 @@ if __name__ == "__main__":
     print("\n📋 REPORT DIAGNOSTICO COMPLETO:")
     print(classification_report(y_true, y_pred, labels=tutte_le_classi, zero_division=0))
 
-    # --- CALCOLO AVERAGE PRECISION (AP) - AUC curva P-R con soglia confidence [0.5, 0.9] ---
-    print("\n📊 CALCOLO AVERAGE PRECISION (AP) PER CLASSE (IoU 0.5-0.9):")
+    # --- CALCOLO VERA mAP (Mean Average Precision) - IoU da 0.50 a 0.90 ---
+    print("\n📊 CALCOLO mAP PER CLASSE (Soglie IoU 0.50 -> 0.90):")
     y_true_bin = label_binarize(y_true, classes=tutte_le_classi)
-    ap_scores = {}
-    for i, nome_classe in enumerate(tutte_le_classi):
-        prec, rec, thr = precision_recall_curve(y_true_bin[:, i], y_proba[:, i])
-        mask = (thr >= 0.5) & (thr <= 0.9)
-        if mask.sum() >= 2:
-            p = prec[:-1][mask]
-            r = rec[:-1][mask]
-            idx = np.argsort(r)
-            ap = float(np.trapz(p[idx], r[idx]))
-        else:
-            ap = 0.0
-        ap_scores[nome_classe] = ap
-        print(f"   - AP {nome_classe.ljust(15)}: {ap:.4f}")
 
-    # Mean Average Precision (mAP)
-    map_score = sum(ap_scores.values()) / len(ap_scores)
+    soglie_iou = np.arange(0.50, 0.95, 0.05)
+    map_per_classe = {}
+
+    for i, nome_classe in enumerate(tutte_le_classi):
+        if nome_classe == 'Rumore': continue
+        ap_tutte_le_soglie = []
+
+        for soglia in soglie_iou:
+            y_true_soglia = y_true_bin[:, i].copy()
+
+            # LA GHIGLIOTTINA DEL PROF
+            mask_bocciati = df_test['IoU_Reale'].fillna(0) < soglia
+            y_true_soglia[mask_bocciati] = 0
+
+            from sklearn.metrics import average_precision_score
+
+            ap = average_precision_score(y_true_soglia, y_proba[:, i])
+            ap = 0.0 if np.isnan(ap) else ap
+
+            ap_tutte_le_soglie.append(ap)
+
+        map_classe = np.mean(ap_tutte_le_soglie)
+        map_per_classe[nome_classe] = map_classe
+        print(f"   - mAP {nome_classe.ljust(15)}: {map_classe:.4f}")
+
+    map_score = sum(map_per_classe.values()) / len(map_per_classe)
     print(f"   > mAP Globale        : {map_score:.4f}")
 
     # --- GRAFICO 1: MATRICE DI CONFUSIONE ---
@@ -195,10 +207,11 @@ if __name__ == "__main__":
 
     fig_pr, ax_pr = plt.subplots(figsize=(8, 6))
     for i, nome_classe in enumerate(tutte_le_classi):
+        if nome_classe == 'Rumore': continue
         precision, recall, _ = precision_recall_curve(y_true_bin[:, i], y_proba[:, i])
-        ap = ap_scores[nome_classe]
+        ap = map_per_classe[nome_classe]
         ax_pr.plot(recall, precision, lw=2, color=colori_pr.get(nome_classe, 'black'),
-                   label=f'{nome_classe} (AP = {ap:.4f})')
+                   label=f'{nome_classe} (mAP = {ap:.4f})')
     plt.legend()
     plt.title("Curve Precision-Recall (Metriche Anti-Doppioni)")
     plt.show()

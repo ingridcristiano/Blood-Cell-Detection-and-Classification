@@ -74,6 +74,7 @@ def valida_dataset_test_completo():
 
     # --- LOGICA APPLICATA: Inizializziamo a NaN per nascondere il rumore non annotato ---
     df['GroundTruth_Label'] = pd.Series(np.nan, dtype="object")
+    df['IoU_Reale'] = 0.0  # <--- INSERITO: Serve per salvare l'IoU e fare il calcolo del prof
 
     for img_name in df['ImageName'].unique():
         nome_base = os.path.splitext(img_name)[0]
@@ -125,6 +126,7 @@ def valida_dataset_test_completo():
             # Promuove solo il rettangolo vincente
             if miglior_idx is not None:
                 df.at[miglior_idx, 'GroundTruth_Label'] = cls_name
+                df.at[miglior_idx, 'IoU_Reale'] = miglior_iou  # <--- INSERITO: Salviamo il valore per il calcolo mAP
 
     return df
 
@@ -169,27 +171,44 @@ if __name__ == "__main__":
         classi_str = [mappa_inversa[c] for c in rf.classes_]
         y_true_bin = label_binarize(y_true, classes=classi_str)
 
-        # --- CALCOLO AVERAGE PRECISION (AP) - AUC curva P-R con soglia confidence [0.5, 0.9] ---
-        print("\n📊 CALCOLO AVERAGE PRECISION (AP) PER CLASSE MEDICA (IoU 0.5-0.9):")
-        ap_scores = {}
+        # --- CALCOLO VERA mAP (Mean Average Precision) - IoU da 0.50 a 0.90 ---
+        print("\n📊 CALCOLO mAP PER CLASSE MEDICA (Soglie IoU 0.50 -> 0.90):")
+
+        # Creiamo le 9 soglie richieste dal prof: [0.50, 0.55, 0.60, ..., 0.90]
+        soglie_iou = np.arange(0.50, 0.95, 0.05)
+        map_per_classe = {}
+
         for i, nome_classe in enumerate(classi_str):
             if nome_classe == 'Rumore':
                 continue
-            prec, rec, thr = precision_recall_curve(y_true_bin[:, i], y_proba[:, i])
-            mask = (thr >= 0.5) & (thr <= 0.9)
-            if mask.sum() >= 2:
-                p = prec[:-1][mask]
-                r = rec[:-1][mask]
-                idx = np.argsort(r)
-                ap = float(np.trapz(p[idx], r[idx]))
-            else:
-                ap = 0.0
-            ap_scores[nome_classe] = ap
-            print(f"   - AP {nome_classe.ljust(15)}: {ap:.4f}")
 
-        if ap_scores:
-            map_score = sum(ap_scores.values()) / len(ap_scores)
-            print(f"   > mAP (Solo Cellule): {map_score:.4f}")
+            ap_tutte_le_soglie = []
+
+            # Facciamo l'esame per ogni singola soglia di severità
+            for soglia in soglie_iou:
+                y_true_soglia = y_true_bin[:, i].copy()
+
+                # LA GHIGLIOTTINA: se il box C++ ha un IoU inferiore alla soglia attuale,
+                # per la metrica diventa un errore (Falso Positivo), quindi azzeriamo l'etichetta.
+                mask_bocciati = df_valutazione['IoU_Reale'].fillna(0) < soglia
+                y_true_soglia[mask_bocciati] = 0
+
+                # Calcoliamo l'Average Precision standard di Scikit-Learn
+                from sklearn.metrics import average_precision_score
+
+                ap = average_precision_score(y_true_soglia, y_proba[:, i])
+                ap = 0.0 if np.isnan(ap) else ap
+
+                ap_tutte_le_soglie.append(ap)
+
+            # La mAP della classe è la media dei voti presi in tutte le 9 soglie
+            map_classe = np.mean(ap_tutte_le_soglie)
+            map_per_classe[nome_classe] = map_classe
+            print(f"   - mAP {nome_classe.ljust(15)}: {map_classe:.4f}")
+
+        if map_per_classe:
+            map_globale = sum(map_per_classe.values()) / len(map_per_classe)
+            print(f"   > mAP GLOBALE [0.50-0.90] : {map_globale:.4f}")
 
         # --- GRAFICO 1: MATRICE DI CONFUSIONE PULITA ---
         print("\n4. Generazione Matrice di Confusione (chiudi la finestra per procedere)...")
@@ -211,9 +230,9 @@ if __name__ == "__main__":
             if nome_classe == 'Rumore':
                 continue
             precision, recall, _ = precision_recall_curve(y_true_bin[:, i], y_proba[:, i])
-            ap = ap_scores[nome_classe]
+            ap = map_per_classe[nome_classe]
             ax_pr.plot(recall, precision, lw=2, color=colori_pr.get(nome_classe, 'black'),
-                       label=f'{nome_classe} (AP = {ap:.4f})')
+                       label=f'{nome_classe} (mAP = {ap:.4f})')
         plt.legend()
         plt.xlabel('Recall')
         plt.ylabel('Precision')
