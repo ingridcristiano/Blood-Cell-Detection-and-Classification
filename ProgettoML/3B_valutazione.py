@@ -138,7 +138,7 @@ if __name__ == "__main__":
     print("2. Caricamento del cervello IA (.pkl)...")
     imputer = joblib.load(os.path.join(MODELS_DIR, 'imputer_progetto.pkl'))
     scaler = joblib.load(os.path.join(MODELS_DIR, 'scaler_progetto.pkl'))
-    rf = joblib.load(os.path.join(MODELS_DIR, 'random_forest.pkl'))
+    rf = joblib.load(os.path.join(MODELS_DIR, 'xgboost_model.pkl'))
 
     print("3. Esecuzione predizioni...")
     cols_to_use = [col for col in FEATURES if col in df_test.columns]
