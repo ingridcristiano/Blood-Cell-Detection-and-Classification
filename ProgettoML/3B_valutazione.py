@@ -9,7 +9,7 @@ import warnings
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import label_binarize
 from sklearn.metrics import classification_report, accuracy_score, confusion_matrix, ConfusionMatrixDisplay, \
-    precision_recall_curve, average_precision_score
+    precision_recall_curve
 from xgboost import XGBClassifier
 
 warnings.filterwarnings('ignore', category=UserWarning)
@@ -169,13 +169,21 @@ if __name__ == "__main__":
         classi_str = [mappa_inversa[c] for c in rf.classes_]
         y_true_bin = label_binarize(y_true, classes=classi_str)
 
-        # --- CALCOLO AVERAGE PRECISION (AP) ---
-        print("\n📊 CALCOLO AVERAGE PRECISION (AP) PER CLASSE MEDICA:")
+        # --- CALCOLO AVERAGE PRECISION (AP) - AUC curva P-R con soglia confidence [0.5, 0.9] ---
+        print("\n📊 CALCOLO AVERAGE PRECISION (AP) PER CLASSE MEDICA (IoU 0.5-0.9):")
         ap_scores = {}
         for i, nome_classe in enumerate(classi_str):
             if nome_classe == 'Rumore':
                 continue
-            ap = average_precision_score(y_true_bin[:, i], y_proba[:, i])
+            prec, rec, thr = precision_recall_curve(y_true_bin[:, i], y_proba[:, i])
+            mask = (thr >= 0.5) & (thr <= 0.9)
+            if mask.sum() >= 2:
+                p = prec[:-1][mask]
+                r = rec[:-1][mask]
+                idx = np.argsort(r)
+                ap = float(np.trapz(p[idx], r[idx]))
+            else:
+                ap = 0.0
             ap_scores[nome_classe] = ap
             print(f"   - AP {nome_classe.ljust(15)}: {ap:.4f}")
 
