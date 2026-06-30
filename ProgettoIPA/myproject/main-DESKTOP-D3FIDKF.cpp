@@ -1,3 +1,41 @@
+// =============================================================================
+// PROGETTO: Segmentazione e Classificazione di Cellule Ematiche
+// ESAME:    Image Processing and Analysis (IPA)
+// AUTORI:   Gruppo (vedi relazione)
+//
+// DESCRIZIONE:
+//   Elabora immagini di vetrini di sangue periferico. Per ogni immagine esegue
+//   la pipeline di segmentazione (WBC, RBC, PLT), estrae 25 feature numeriche
+//   per segmento e le salva nei CSV per il successivo addestramento ML.
+//
+//   OUTPUT INTERMEDI (salvati automaticamente su disco, senza bloccare il CSV):
+//     Vengono salvate 8 cartelle numerate sotto ./output_steps/, ognuna con
+//     le immagini di confronto (Originale | Step) di TUTTE le immagini:
+//       01_WBC_soglia_HSV/         Soglia cromatica viola grezza per i WBC
+//       02_WBC_maschera_finale/    Maschera WBC dopo morfologia e filtro area
+//       03_PLT_esclusione_WBC/     Zona di esclusione WBC per le piastrine
+//       04_PLT_maschera_finale/    Maschera PLT dopo filtro area 30-800 px2
+//       05_RBC_Otsu_foreground/    Soglia di Otsu: foreground totale
+//       06_RBC_sottrazione_WBC/    Foreground - WBC dilatati = RBC grezzo
+//       07_RBC_scheletro/          Scheletrizzazione morfologica della maschera RBC
+//       08_RBC_finestre/           Finestre 80x80 centrate sui centri scheletro
+//       09_risultato_finale/       Ground Truth (medico) vs Pipeline (nostra)
+//
+//   VISUALIZZAZIONE INTERATTIVA:
+//     Come nel codice originale, si apre solo la finestra dell'ultimo step
+//     (Ground Truth vs Pipeline). Premere un tasto per scorrere le immagini,
+//     ESC per chiudere le finestre e completare il CSV in batch.
+//
+//   FEATURE ESTRATTE (25 per campione):
+//     Geometriche (6):  Area, Perimetro, Circolarita, AspectRatio,
+//                       Eccentricita, Extent
+//     Colore BGR  (3):  MeanBlue, MeanGreen, MeanRed
+//     Intensita   (4):  MeanValue, MinValue, MaxValue, TextureValue
+//     Saturazione (4):  MeanSaturation, MinSat, MaxSat, TextureSat
+//     Texture     (1):  TextureLaplacian
+//     Hu Moments  (7):  Hu1..Hu7 (log-trasformati, segno preservato)
+// =============================================================================
+
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <vector>
@@ -9,6 +47,16 @@
 namespace fs = std::filesystem;
 
 
+// =============================================================================
+// FUNZIONE: Salva il confronto tra due immagini affiancate in una cartella step
+//
+// stepDir  : cartella di destinazione (es. "./output_steps/01_WBC_soglia_HSV/")
+// baseName : nome del file senza estensione (es. "BloodImage_001")
+// sinistra : immagine di sinistra (originale o step precedente)
+// labelSin : etichetta testuale sovrapposta all'immagine sinistra
+// destra   : immagine dello step corrente
+// labelDes : etichetta testuale sovrapposta all'immagine destra
+// =============================================================================
 void salvaConfronto(const std::string& stepDir,
     const std::string& baseName,
     const cv::Mat& sinistra, const std::string& labelSin,
@@ -38,6 +86,20 @@ void salvaConfronto(const std::string& stepDir,
 }
 
 
+// =============================================================================
+// FUNZIONE PRINCIPALE: Estrazione feature da una maschera binaria
+//
+// Per ogni contorno rilevato nella maschera (con area >= minArea) calcola
+// 25 feature e scrive una riga nel CSV. Aggiorna imgAnteprima con i bbox.
+//
+// FEATURE:
+//   [Geometriche]  area, perimetro, circolarita, aspectRatio, eccentricita, extent
+//   [Colore BGR]   meanBlue, meanGreen, meanRed
+//   [Intensita V]  meanValue, minValue, maxValue, textureValue (StdDev)
+//   [Saturaz. S]   meanSat, minSat, maxSat, textureSat (StdDev)
+//   [Texture]      textureLaplacian (StdDev del Laplaciano su canale V)
+//   [Hu Moments]   hu1..hu7 (log-trasformati: sign * log10(|h|))
+// =============================================================================
 void extractAndSaveFeatures(const cv::Mat& imgOriginale, const cv::Mat& mask,
     const std::string& cellType, const std::string& imageName,
     std::ofstream& csvFile, cv::Mat& imgAnteprima, double minArea = 5.0) {
@@ -179,8 +241,9 @@ int main() {
         // NOTA: Le righe commentate sono i percorsi delle collaboratrici.
         //       Non modificare.
         // =====================================================================
-      // giorgia std::string cartellaProgettoML = "C:/Users/giorg/OneDrive/Documenti/GitHub/Template-C-/ProgettoML/csv/";
-        std::string cartellaProgettoML = "./csv/";
+       std::string cartellaProgettoML = "C:/Users/giorg/OneDrive/Documenti/GitHub/Blood-Cell-Detection-and-Classification/ProgettoML/csv/"; //giorgia
+       //std::string cartellaProgettoML = "C:/Template-C-/ProgettoML/csv/";
+       // std::string cartellaProgettoML = "./csv/";
 
         fs::create_directories(cartellaProgettoML);
 
@@ -188,14 +251,17 @@ int main() {
         std::string stepRootDir = "./output_steps/";
 
         std::vector<DatasetConfig> pipeline = {
-            //giorgia {"C:/Users/giorg/OneDrive/Documenti/GitHub/Template-C-/ProgettoML/archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
+                  {"C:/Users/giorg/OneDrive/Documenti/GitHub/Blood-Cell-Detection-and-Classification/ProgettoIPA/archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"}, //giorgia
 
-             { "C:/Users/monic/lunedi/archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
+                    //{"C:/Template-C-/ProgettoIPA/archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
+            //{ "../archive/train/img/", cartellaProgettoML + "features_cellule_train.csv", "TRAIN"},
 
 
-             //giorgia {"C:/Users/giorg/OneDrive/Documenti/GitHub/Template-C-/ProgettoML/archive/test/", cartellaProgettoML + "features_cellule_test.csv", "TEST" }
+                        {"C:/Users/giorg/OneDrive/Documenti/GitHub/Blood-Cell-Detection-and-Classification/ProgettoIPA/archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}    //giorgia
+              //      };
 
-                      { "C:/Users/monic/lunedi/archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST" }
+               //    {"C:/Template-C-/ProgettoIPA/archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST"}, 
+             //    { "../archive/test/img/", cartellaProgettoML + "features_cellule_test.csv", "TEST" }
         };
 
         std::string folderAnnotate = "../output/";
@@ -281,7 +347,7 @@ int main() {
 
 
                 // =============================================================
-                // SEGMENTAZIONE WBC — Globuli Bianchi
+                // SEGMENTAZIONE WBC â€” Globuli Bianchi
                 //
                 // I WBC presentano un nucleo colorato in viola/lilla dalla
                 // colorazione di Wright-Giemsa. Soglia HSV nel range del viola,
@@ -325,7 +391,7 @@ int main() {
 
 
                 // =============================================================
-                // SEGMENTAZIONE PLT — Piastrine
+                // SEGMENTAZIONE PLT â€” Piastrine
                 //
                 // Le piastrine appaiono come piccoli granuli blu-violacei.
                 // Soglia HSV nel range del blu, seguita da esclusione esplicita
@@ -386,7 +452,7 @@ int main() {
 
 
                 // =============================================================
-                // SEGMENTAZIONE RBC — Globuli Rossi
+                // SEGMENTAZIONE RBC â€” Globuli Rossi
                 //
                 // Strategia differenziale: i Rossi non hanno un colore
                 // specifico affidabile, quindi si isolano per sottrazione.
@@ -533,7 +599,7 @@ int main() {
                 }
 
                 // =============================================================
-                // RISULTATO FINALE — Salvataggio e visualizzazione interattiva
+                // RISULTATO FINALE â€” Salvataggio e visualizzazione interattiva
                 //
                 // Salva sempre su disco il confronto Ground Truth vs Pipeline.
                 // La finestra interattiva si comporta come nell'originale:

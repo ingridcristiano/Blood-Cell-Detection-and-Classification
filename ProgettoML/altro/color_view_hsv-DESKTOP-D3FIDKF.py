@@ -41,7 +41,7 @@ while True:
     upper = np.array([h_max, s_max, v_max])
     mask = cv2.inRange(hsv, lower, upper)
 
-    # Mostra i risultati
+    # Mostra i risultati_supervised
     cv2.imshow("Originale", img)
     cv2.imshow("Maschera", mask)
 

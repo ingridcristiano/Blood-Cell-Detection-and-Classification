@@ -4,6 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< HEAD
+    <list default="true" id="4321e8b8-09d3-40f7-b14a-7e6c0263bad2" name="Changes" comment="" />
+=======
     <list default="true" id="4321e8b8-09d3-40f7-b14a-7e6c0263bad2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/../ProgettoIPA/myproject/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../ProgettoIPA/myproject/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
@@ -15,6 +18,7 @@
       <change beforePath="$PROJECT_DIR$/csv/features_cellule_train.csv" beforeDir="false" afterPath="$PROJECT_DIR$/csv/features_cellule_train.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/valutazione_3.py" beforeDir="false" afterPath="$PROJECT_DIR$/valutazione_3.py" afterDir="false" />
     </list>
+>>>>>>> parent of 97ed0cd (Controlli ML)
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
